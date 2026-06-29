@@ -756,3 +756,195 @@ function escHtml(s) {
 
 renderIntro();
 showScreen('intro');
+
+
+
+/* ============================================================
+   EXTRA FEATURES — móvil: Hoy toca, sorpresa, álbum, energía
+   ============================================================ */
+
+function allMissionEntries() {
+  const out = [];
+  DESTINATIONS.forEach(dest => {
+    if (dest.missions) dest.missions.forEach(m => out.push({ dest, mission: m }));
+  });
+  return out;
+}
+
+function getEnergyLabel() {
+  const score = getScore();
+  if (score >= 150) return '⚡ Energía máxima';
+  if (score >= 70) return '🔋 Energía media';
+  return '🌱 Energía de inicio';
+}
+
+function getTodayDestination() {
+  const missionDests = DESTINATIONS.filter(d => d.missions);
+  const active = missionDests.find(d => {
+    const p = getDestProgress(d.id);
+    return p.done > 0 && p.done < p.total;
+  });
+  if (active) return active;
+  const next = missionDests.find(d => getDestProgress(d.id).done === 0);
+  return next || missionDests[0];
+}
+
+function goToday() {
+  renderToday();
+  showScreen('today');
+}
+
+function renderToday() {
+  const dest = getTodayDestination();
+  const pending = dest.missions.filter(m => !state.done[m.id]).slice(0, 3);
+  const chosen = pending.length ? pending : dest.missions.slice(0, 3);
+  const prog = getDestProgress(dest.id);
+
+  document.getElementById('todayContent').innerHTML = `
+    <div class="mini-screen">
+      <div class="mini-hero" style="background:${dest.cardBg || dest.color}">
+        <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
+        <div class="mini-icon">${dest.icon}</div>
+        <h1>📅 Hoy toca: ${dest.name}</h1>
+        <p>${dest.story}</p>
+        <div class="energy-pill">${getEnergyLabel()}</div>
+        <div class="dest-hdr-prog">
+          <div class="dest-hdr-bar"><div class="dest-hdr-bar-fill" style="width:${prog.pct}%"></div></div>
+          <div class="dest-hdr-pct">${prog.pct}%</div>
+        </div>
+      </div>
+      <div class="mini-content">
+        <h2>Solo 3 misiones para hoy</h2>
+        <p class="mini-help">Para que Juan no se abrume. Puede completar una, dos o las tres.</p>
+        <div class="mini-missions">
+          ${chosen.map(m => `
+            <div class="today-card ${state.done[m.id] ? 'done' : ''}">
+              <div class="today-ico">${m.icon}</div>
+              <div class="today-title">${m.name}</div>
+              <div class="today-pts">${m.pts} puntos</div>
+              ${state.done[m.id] 
+                ? `<button class="mission-btn done-state" disabled>✅ Hecha</button>`
+                : `<button class="mission-btn" onclick="toggleMission('${m.id}','${dest.id}'); renderToday();">🎯 ¡Lo logré!</button>`}
+            </div>
+          `).join('')}
+        </div>
+        <button class="btn-teal" onclick="goDest('${dest.id}')">Ver todas las misiones de ${dest.name}</button>
+        <button class="btn-navy" onclick="goMap()">⬅️ Mapa</button>
+      </div>
+    </div>
+  `;
+}
+
+function goSurprise() {
+  renderSurprise();
+  showScreen('surprise');
+}
+
+function renderSurprise() {
+  const pending = allMissionEntries().filter(x => !state.done[x.mission.id]);
+  const pool = pending.length ? pending : allMissionEntries();
+  const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+  document.getElementById('surpriseContent').innerHTML = `
+    <div class="mini-screen">
+      <div class="mini-hero surprise-hero">
+        <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
+        <div class="mini-icon">🎲</div>
+        <h1>Misión sorpresa</h1>
+        <p>El dado del explorador eligió una misión secreta para Juan Martín.</p>
+      </div>
+      <div class="mini-content">
+        <div class="surprise-card ${state.done[chosen.mission.id] ? 'done' : ''}">
+          <div class="surprise-dest">${chosen.dest.icon} ${chosen.dest.name}</div>
+          <div class="surprise-icon">${chosen.mission.icon}</div>
+          <h2>${chosen.mission.name}</h2>
+          <p class="today-pts">${chosen.mission.pts} puntos</p>
+          ${state.done[chosen.mission.id]
+            ? `<button class="mission-btn done-state" disabled>✅ Ya estaba cumplida</button>`
+            : `<button class="mission-btn" onclick="toggleMission('${chosen.mission.id}','${chosen.dest.id}'); renderSurprise();">🎯 ¡Lo logré!</button>`}
+        </div>
+        <button class="btn-teal" onclick="renderSurprise()">🎲 Sacar otra misión</button>
+        <button class="btn-navy" onclick="goToday()">📅 Hoy toca</button>
+      </div>
+    </div>
+  `;
+}
+
+function goAlbum() {
+  renderAlbum();
+  showScreen('album');
+}
+
+function renderAlbum() {
+  const score = getScore();
+  const doneEntries = allMissionEntries().filter(x => state.done[x.mission.id]);
+  const worldcupHTML = state.worldcup && Object.keys(state.worldcup).length
+    ? Object.entries(state.worldcup).filter(([k,v]) => v && v.trim()).map(([k,v]) => `<div class="album-line"><strong>${labelForField(k)}</strong><span>${escHtml(v)}</span></div>`).join('')
+    : '<p class="mini-help">Todavía no hay respuestas del Mundial.</p>';
+  const memoriesHTML = state.memories && Object.keys(state.memories).length
+    ? Object.entries(state.memories).filter(([k,v]) => v && v.trim()).map(([k,v]) => `<div class="album-line"><strong>${labelForField(k)}</strong><span>${escHtml(v)}</span></div>`).join('')
+    : '<p class="mini-help">Todavía no hay recuerdos finales.</p>';
+
+  document.getElementById('albumContent').innerHTML = `
+    <div class="album">
+      <div class="album-cover">
+        <button class="dest-hdr-back no-print" onclick="goMap()">⬅️ Volver al mapa</button>
+        <div class="mini-icon">📘</div>
+        <h1>Álbum final de Juan Martín</h1>
+        <p>La Gran Expedición 2026</p>
+        <div class="energy-pill">${getRank(score)} · ${score} puntos · Nivel ${getLevel(score)}</div>
+      </div>
+
+      <section class="album-section">
+        <h2>🏅 Mis insignias desbloqueadas</h2>
+        <div class="badges-grid">
+          ${DESTINATIONS.map(dest => `<div class="badge-card ${getUnlockedBadges().has(dest.id) ? 'unlocked' : ''}"><span class="badge-icon">${dest.badge}</span>${dest.badgeName}</div>`).join('')}
+        </div>
+      </section>
+
+      <section class="album-section">
+        <h2>🎯 Misiones cumplidas</h2>
+        ${doneEntries.length ? doneEntries.map(x => `
+          <div class="album-mission">
+            <div><strong>${x.dest.icon} ${x.dest.name}</strong></div>
+            <div>${x.mission.icon} ${x.mission.name} · ${x.mission.pts} puntos</div>
+            ${state.notes[x.mission.id] ? `<p>“${escHtml(state.notes[x.mission.id])}”</p>` : ''}
+            ${state.photos[x.mission.id] ? `<img class="album-photo" src="${state.photos[x.mission.id]}" alt="foto">` : ''}
+          </div>`).join('') : '<p class="mini-help">Aún no hay misiones completadas.</p>'}
+      </section>
+
+      <section class="album-section">
+        <h2>⚽ Mi Mundial de Aventuras</h2>
+        ${worldcupHTML}
+      </section>
+
+      <section class="album-section">
+        <h2>💙 Mis recuerdos finales</h2>
+        ${memoriesHTML}
+      </section>
+
+      <section class="diploma album-diploma">
+        <span class="diploma-trophy">🏆</span>
+        <div class="diploma-title">Diploma de Explorador Supremo</div>
+        <p class="diploma-text">Por la presente se certifica que <strong>Juan Martín</strong> completó con valentía y alegría su Gran Expedición 2026.</p>
+        <p><strong>${getRank(score)}</strong> · ${score} puntos</p>
+        <div class="diploma-fields">
+          <div class="diploma-field"><label>Firma del Explorador</label><input placeholder="Juan Martín"></div>
+          <div class="diploma-field"><label>Firma de Mamá</label><input placeholder="Mamá"></div>
+        </div>
+      </section>
+
+      <div class="map-footer-btns no-print">
+        <button class="btn-teal" onclick="window.print()">🖨️ Imprimir / guardar PDF</button>
+        <button class="btn-navy" onclick="goMap()">⬅️ Mapa</button>
+      </div>
+    </div>
+  `;
+}
+
+function labelForField(id) {
+  const allFields = DESTINATIONS.filter(d => d.fields).flatMap(d => d.fields);
+  const found = allFields.find(f => f.id === id);
+  return found ? found.label : id;
+}
+

@@ -769,402 +769,165 @@ input.file-inp { display: none; }
   .intro-avatar { font-size: 90px; }
 }
 
-/* ══════════════════════════════════════════════════════════
-   AJUSTE ESPECIAL PARA MÓVIL — Viaje JM 2026
-   Mantiene colores originales, mejora navegación táctil
-══════════════════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  html, body {
-    width: 100%;
-    overflow-x: hidden;
-  }
 
-  body {
-    font-size: 16px;
-    padding-bottom: env(safe-area-inset-bottom);
-  }
+/* ============================================================
+   EXTRA FEATURES — Hoy toca / Sorpresa / Álbum / móvil
+   ============================================================ */
+.mini-screen { min-height: 100vh; background: var(--bg); }
+.mini-hero {
+  color:#fff;
+  padding: 18px 18px 34px;
+  border-radius: 0 0 30px 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.mini-hero h1 {
+  font-size: clamp(28px, 8vw, 44px);
+  margin: 8px 0 10px;
+  font-weight: 900;
+  line-height: 1.05;
+}
+.mini-hero p {
+  background: rgba(255,255,255,.16);
+  border-radius: 18px;
+  padding: 13px;
+  line-height: 1.45;
+}
+.mini-icon { font-size: 76px; filter: drop-shadow(0 6px 14px rgba(0,0,0,.28)); }
+.energy-pill {
+  display: inline-block;
+  background: rgba(255,255,255,.2);
+  border: 2px solid rgba(255,255,255,.35);
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-weight: 900;
+  margin: 8px auto 12px;
+}
+.mini-content {
+  padding: 20px;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.mini-help {
+  background: #fff;
+  border: 2px dashed #BDEAF1;
+  color: var(--ink);
+  border-radius: 16px;
+  padding: 12px;
+  font-weight: 700;
+}
+.mini-missions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
+  gap: 14px;
+  margin: 16px 0;
+}
+.today-card, .surprise-card {
+  background:#fff;
+  border:3px solid #D7F3F7;
+  border-radius:24px;
+  padding:16px;
+  text-align:center;
+  box-shadow:0 6px 18px rgba(6,59,99,.09);
+}
+.today-card.done, .surprise-card.done {
+  border-color: var(--green);
+  background: linear-gradient(160deg,#EAFFF4,#fff);
+}
+.today-ico { font-size:48px; }
+.today-title { color:var(--navy); font-size:18px; font-weight:900; line-height:1.25; margin:8px 0; }
+.today-pts { color:var(--teal); font-weight:900; margin:6px 0 12px; }
+.surprise-hero { background: linear-gradient(135deg, var(--navy), var(--teal)); }
+.surprise-icon { font-size:78px; margin:8px 0; }
+.surprise-dest {
+  display:inline-block;
+  background:var(--mint);
+  color:var(--navy);
+  border-radius:999px;
+  padding:8px 14px;
+  font-weight:900;
+}
+.album { min-height:100vh; background:var(--bg); }
+.album-cover {
+  background: linear-gradient(155deg, #03243E 0%, #063B63 45%, #0EA5A3 100%);
+  color:#fff;
+  text-align:center;
+  padding:22px 18px 34px;
+  border-radius:0 0 32px 32px;
+}
+.album-cover h1 {
+  font-size: clamp(30px, 8vw, 52px);
+  margin:8px 0;
+  line-height:1;
+  font-weight:900;
+}
+.album-section {
+  background:#fff;
+  border:3px solid #D7F3F7;
+  border-radius:24px;
+  padding:18px;
+  margin:18px auto;
+  max-width:980px;
+  box-shadow:0 6px 18px rgba(6,59,99,.08);
+}
+.album-section h2 { color:var(--navy); margin-top:0; }
+.album-mission {
+  border:2px solid #D7F3F7;
+  border-radius:18px;
+  padding:12px;
+  margin:10px 0;
+  background:#FAFEFF;
+}
+.album-mission p {
+  background:var(--sand);
+  border-radius:12px;
+  padding:10px;
+}
+.album-photo {
+  width:100%;
+  max-height:260px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-top:8px;
+}
+.album-line {
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:6px;
+  border-bottom:1px solid #D7F3F7;
+  padding:10px 0;
+}
+.album-line strong { color:var(--navy); }
+.album-line span { background:var(--sand); border-radius:12px; padding:10px; }
+.album-diploma { margin:18px auto; max-width:980px; }
 
-  .screen {
-    min-height: 100svh;
-  }
-
-  /* Intro más compacta para iPhone */
-  .intro-bg {
-    min-height: 100svh;
-    padding: max(18px, env(safe-area-inset-top)) 14px 24px;
-    align-items: flex-start;
-  }
-
-  .intro-inner {
-    max-width: 100%;
-    padding-top: 8px;
-  }
-
-  .intro-pill {
-    font-size: 13px;
-    padding: 8px 16px;
-    margin-bottom: 12px;
-  }
-
-  .intro-avatar {
-    font-size: clamp(68px, 22vw, 96px);
-  }
-
-  .intro-h1 {
-    font-size: clamp(27px, 10vw, 42px);
-    line-height: 1.02;
-    margin: 8px 0 12px;
-  }
-
-  .intro-h1 span {
-    font-size: .82em;
-  }
-
-  .intro-p {
-    font-size: 15px;
-    line-height: 1.45;
-    padding: 13px 14px;
-    margin-bottom: 18px;
-  }
-
-  .btn-xl {
-    max-width: none;
-    padding: 18px 16px;
-    font-size: 20px;
-    border-radius: 18px;
-    margin-bottom: 16px;
-  }
-
-  .intro-stats {
-    padding: 12px;
-    border-radius: 18px;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 7px;
-  }
-
-  .stat-box {
-    padding: 10px 4px;
-    border-radius: 13px;
-  }
-
-  .stat-num {
-    font-size: clamp(22px, 8vw, 30px);
-  }
-
-  .stat-lbl {
-    font-size: 11px;
-  }
-
-  .rank-banner {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  /* Barra superior que sí cabe en celular */
-  .top-bar {
-    padding: max(10px, env(safe-area-inset-top)) 12px 10px;
-    gap: 8px;
-  }
-
-  .top-avatar {
-    font-size: 30px;
-  }
-
-  .top-rank {
-    font-size: 12px;
-    max-width: 160px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .top-level,
-  .top-bdg {
-    font-size: 12px;
-  }
-
-  .top-pts {
-    font-size: 18px;
-  }
-
-  .xp-wrap {
-    height: 8px;
-  }
-
-  .map-inner {
-    padding: 14px 12px 28px;
-  }
-
-  .map-title-row {
-    margin-bottom: 12px;
-  }
-
-  .map-title-row h2 {
-    font-size: 22px;
-    line-height: 1.15;
-  }
-
-  .map-sub {
-    font-size: 13px;
-  }
-
-  /* Mapa por destinos: tarjetas tipo app, no columnas estrechas */
-  .dest-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px;
-    margin-bottom: 26px;
-  }
-
-  .dest-card {
-    border-radius: 22px;
-    box-shadow: 0 5px 16px rgba(6,59,99,.12);
-  }
-
-  .dest-card:hover {
-    transform: none;
-  }
-
-  .dest-card-top {
-    min-height: 128px;
-    padding: 18px 12px 12px;
-  }
-
-  .dest-card-icon {
-    font-size: 54px;
-  }
-
-  .dest-card-title {
-    font-size: 20px;
-  }
-
-  .dest-card-body {
-    padding: 13px 14px 15px;
-  }
-
-  .dest-btn {
-    min-height: 52px;
-    padding: 14px 12px;
-    font-size: 16px;
-  }
-
-  .badges-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-  }
-
-  .badge-card {
-    min-height: 104px;
-    padding: 13px 8px;
-    border-radius: 18px;
-  }
-
-  .badge-icon {
-    font-size: 34px;
-  }
-
+@media (max-width: 520px) {
   .map-footer-btns {
     position: sticky;
     bottom: 0;
-    background: linear-gradient(180deg, rgba(234,248,255,0), var(--bg) 28%);
-    padding: 20px 0 max(12px, env(safe-area-inset-bottom));
-    margin: 0 -4px;
+    background: rgba(234,248,255,.94);
+    backdrop-filter: blur(8px);
+    padding: 10px 8px 14px;
+    border-top: 2px solid #D7F3F7;
+    z-index: 8;
   }
-
-  .btn-navy,
-  .btn-teal,
-  .btn-coral {
-    width: 100%;
-    min-height: 48px;
-    font-size: 15px;
-  }
-
-  /* Destino individual */
-  .dest-hdr {
-    padding: max(12px, env(safe-area-inset-top)) 14px 24px;
-    text-align: left;
-  }
-
-  .dest-hdr-back {
-    width: 100%;
-    text-align: center;
-    padding: 11px 14px;
-    margin-bottom: 12px;
-  }
-
-  .dest-hdr-icon {
-    font-size: 58px;
-    text-align: center;
-    margin-top: 0;
-  }
-
-  .dest-hdr-title {
-    font-size: 29px;
-    line-height: 1.05;
-    text-align: center;
-  }
-
-  .dest-hdr-story {
-    font-size: 15px;
-    line-height: 1.45;
-    padding: 12px 13px;
-    border-radius: 16px;
-  }
-
-  .dest-hdr-prog {
-    gap: 8px;
-  }
-
-  .dest-hdr-pct {
-    font-size: 20px;
-    min-width: 46px;
-  }
-
-  .dest-badge-row {
-    padding: 10px 12px;
-    gap: 10px;
-  }
-
-  .dest-badge-icon {
-    font-size: 32px;
-  }
-
-  .dest-badge-label {
+  .map-footer-btns button {
+    flex: 1 1 42%;
+    min-width: 145px;
+    padding: 12px 8px;
     font-size: 13px;
   }
-
-  .missions-wrap,
-  .form-wrap {
-    padding: 14px 12px 24px;
-    max-width: 100%;
-  }
-
-  .missions-grid {
-    grid-template-columns: 1fr !important;
-    gap: 14px;
-  }
-
-  .mission-card {
-    border-radius: 22px;
-    box-shadow: 0 5px 16px rgba(6,59,99,.1);
-  }
-
-  .mission-card:hover {
-    transform: none;
-  }
-
-  .mission-body {
-    padding: 14px;
-  }
-
-  .mission-top {
-    gap: 10px;
-    margin-bottom: 12px;
-  }
-
-  .mission-ico-wrap {
-    width: 50px;
-    height: 50px;
-    font-size: 28px;
-    border-radius: 15px;
-  }
-
-  .mission-name {
-    font-size: 16px;
-  }
-
-  .mission-pts {
-    font-size: 13px;
-  }
-
-  .mission-btn,
-  .btn-save,
-  .btn-back-map {
-    min-height: 52px;
-    font-size: 17px;
-    border-radius: 16px;
-  }
-
-  .mission-note,
-  .form-field input,
-  .form-field textarea,
-  .diploma-field input {
-    font-size: 16px; /* evita zoom automático en iPhone */
-  }
-
-  .mission-note {
-    min-height: 96px;
-  }
-
-  .photo-preview {
-    max-height: 170px;
-  }
-
-  .dest-footer {
-    padding: 0 12px max(18px, env(safe-area-inset-bottom));
-  }
-
-  .btn-back-map {
-    width: 100%;
-  }
-
-  .form-field {
-    margin-bottom: 14px;
-  }
-
-  .form-field label {
-    font-size: 15px;
-  }
-
-  .form-field textarea {
-    min-height: 116px;
-  }
-
-  /* Diploma en una sola columna */
-  .diploma {
-    margin: 16px 0;
-    padding: 22px 14px;
-    border-radius: 22px;
-  }
-
-  .diploma-trophy {
-    font-size: 58px;
-  }
-
-  .diploma-title {
-    font-size: 23px;
-    line-height: 1.1;
-  }
-
-  .diploma-fields {
-    grid-template-columns: 1fr;
-  }
-
-  .diploma-stars {
-    font-size: 21px;
-    letter-spacing: 4px;
-  }
-
-  #toast {
-    bottom: max(14px, env(safe-area-inset-bottom));
-    width: calc(100vw - 28px);
-    max-width: 420px;
-    border-radius: 18px;
-    white-space: normal;
-    font-size: 15px;
-    padding: 13px 16px;
-  }
+  .mini-content { padding: 14px; }
+  .mini-missions { grid-template-columns: 1fr; }
+  .today-card, .surprise-card { padding: 14px; }
+  .album-section { margin: 14px; padding: 14px; }
 }
 
-@media (max-width: 380px) {
-  .intro-h1 { font-size: 26px; }
-  .intro-p { font-size: 14px; }
-  .stat-num { font-size: 22px; }
-  .top-rank { max-width: 125px; }
-  .dest-card-icon { font-size: 48px; }
-  .dest-hdr-title { font-size: 25px; }
-  .badges-grid { grid-template-columns: 1fr 1fr; }
+@media print {
+  .no-print, .map-footer-btns, .dest-hdr-back, #toast, #confetti { display:none !important; }
+  .screen { display:block !important; min-height:auto !important; }
+  .screen:not(#screen-album) { display:none !important; }
+  .album-cover, .mini-hero { border-radius:0; }
+  .album-section, .album-diploma { box-shadow:none; break-inside:avoid; }
 }
-

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Las Aventuras del Agente Juan Martín</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="badge">La Gran Expedición 2026</p>
+      <h1>Las Aventuras del Agente<br><span>Juan Martín</span></h1>
+      <p class="story">Mamá recibió una misión ultrasecreta. Solo un explorador muy valiente podía completarla. Ese explorador eres tú.</p>
+      <button id="resetBtn" class="ghost">Reiniciar aventura</button>
+    </div>
+    <div class="agent-card">
+      <div class="avatar">🧒🏻</div>
+      <h2>Agente Juan Martín</h2>
+      <p>Nivel <span id="level">1</span> ⭐</p>
+      <div class="xp"><div id="xpBar"></div></div>
+      <p id="xpText">0 / 600 XP</p>
+    </div>
+  </header>
+
+  <main>
+    <section class="panel"><h2>🗺️ Progreso del viaje</h2><div id="progressList"></div></section>
+    <section class="panel"><h2>🏅 Mis insignias</h2><div id="badges"></div></section>
+
+    <section class="panel">
+      <h2>⚽ Mundial de aventuras</h2>
+      <p>Como en el Mundial, cada país tiene su bandera. Escribe tus favoritos del Mundial 2026.</p>
+      <div class="worldcup">
+        <label>Mi equipo campeón <input placeholder="Ej: Colombia" /></label>
+        <label>Mi goleador favorito <input placeholder="Nombre" /></label>
+        <label>Mi marcador loco <input placeholder="Ej: 3-2" /></label>
+      </div>
+    </section>
+
+    <section class="panel"><h2>🎯 Misiones</h2><div id="missions" class="missions"></div></section>
+
+    <section class="panel">
+      <h2>📸 Diario rápido</h2>
+      <p>Para llenar cada noche con mamá o papá.</p>
+      <textarea id="diary" placeholder="Hoy mi aventura favorita fue..."></textarea>
+      <button id="saveDiary">Guardar diario</button>
+    </section>
+
+    <section class="panel">
+      <h2>🏆 Diploma</h2>
+      <p id="diplomaText">Completa misiones para convertirte en Explorador Supremo.</p>
+      <button onclick="window.print()">Imprimir / Guardar PDF</button>
+    </section>
+  </main>
+  <div id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>

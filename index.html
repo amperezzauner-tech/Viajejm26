@@ -1,40 +1,69 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Las Aventuras del Agente Juan Martín</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="hero">
-    <div>
-      <p class="badge">La Gran Expedición 2026</p>
-      <h1>Las Aventuras del Agente<br><span>Juan Martín</span></h1>
-      <p class="story">Mamá recibió una misión ultrasecreta. Solo un explorador muy valiente podía completarla. Ese explorador eres tú.</p>
+
+  <!-- ===== SCREEN 1: INTRO ===== -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro-bg">
+      <div class="intro-inner">
+        <div class="intro-pill">🌎 La Gran Expedición 2026</div>
+        <div class="intro-emoji">🧒🏻</div>
+        <h1 class="intro-h1">Las Aventuras del<br><span>Agente Juan Martín</span></h1>
+        <p class="intro-p">Mamá recibió una misión ultrasecreta. Solo un explorador muy valiente podía completarla. <strong>Ese explorador eres tú.</strong></p>
+        <button class="btn-xl" onclick="goMap()">🗺️ Empezar aventura</button>
+        <div class="intro-stats" id="introStats"></div>
+      </div>
     </div>
-    <div class="agent-card">
-      <div class="avatar">🧒🏻</div>
-      <h2>Agente Juan Martín</h2>
-      <p class="big">Nivel <span id="level">1</span> ⭐</p>
-      <div class="xp"><div id="xpBar"></div></div>
-      <p id="xpText">0 / 195 puntos</p>
-      <p id="rankText">Explorador Junior</p>
+  </div>
+
+  <!-- ===== SCREEN 2: MAPA ===== -->
+  <div id="screen-map" class="screen">
+    <div class="top-bar">
+      <div class="top-left">
+        <span class="top-avatar">🧒🏻</span>
+        <div>
+          <div class="top-rank" id="topRank">Explorador Junior</div>
+          <div class="top-level">Nivel <strong id="topLevel">1</strong></div>
+        </div>
+      </div>
+      <div class="top-right">
+        <div class="top-pts" id="topPts">0 pts</div>
+        <div class="top-bdg">🏅 <span id="topBadges">0</span></div>
+      </div>
     </div>
-  </header>
-  <nav class="topbar">
-    <a href="#tablero">📊 Tablero</a><a href="#misiones">🎯 Misiones</a><a href="#mundial">⚽ Mundial</a><a href="#diario">📘 Diario</a>
-  </nav>
-  <main>
-    <section id="tablero" class="panel dashboard"><h2>📊 Mi tablero de explorador</h2><div class="scoreBox"><div><b id="scoreBig">0</b><span>puntos</span></div><div><b id="doneBig">0</b><span>misiones</span></div><div><b id="badgeBig">0</b><span>insignias</span></div></div></section>
-    <section class="panel"><h2>🗺️ Progreso del viaje</h2><div id="progressList"></div></section>
-    <section class="panel"><h2>🏅 Mis insignias</h2><div id="badges"></div></section>
-    <section id="mundial" class="panel"><h2>⚽ Mundial de aventuras</h2><p>Como en el Mundial, cada país tiene su bandera. Escribe tus favoritos del Mundial 2026.</p><div class="worldcup"><label>Mi equipo campeón <input id="wc1" placeholder="Ej: Colombia" /></label><label>Mi goleador favorito <input id="wc2" placeholder="Nombre" /></label><label>Mi marcador loco <input id="wc3" placeholder="Ej: 3-2" /></label></div><button id="saveWorldcup">Guardar Mundial</button></section>
-    <section id="misiones" class="panel"><h2>🎯 Misiones</h2><p class="hint">Cuando Juan toque “¡Lo logré!”, el tablero, las barras y las insignias se actualizan automáticamente.</p><div id="missions" class="missions"></div></section>
-    <section id="diario" class="panel"><h2>📘 Diario rápido</h2><p>Para llenar cada noche con mamá o papá.</p><textarea id="diary" placeholder="Hoy mi aventura favorita fue..."></textarea><button id="saveDiary">Guardar diario</button></section>
-    <section class="panel"><h2>🏆 Diploma</h2><p id="diplomaText">Completa misiones para convertirte en Explorador Supremo.</p><button onclick="window.print()">Imprimir / Guardar PDF</button><button id="resetBtn" class="ghost">Reiniciar aventura</button></section>
-  </main>
+    <div class="xp-wrap"><div class="xp-fill" id="xpFill"></div></div>
+    <div class="map-inner">
+      <div class="map-title-row">
+        <h2>🗺️ Mi mapa de aventura</h2>
+        <div class="map-sub" id="mapSub">0 misiones completadas</div>
+      </div>
+      <div id="destGrid" class="dest-grid"></div>
+      <div class="badges-wrap">
+        <h2>🏅 Mis insignias</h2>
+        <div id="badgesGrid" class="badges-grid"></div>
+      </div>
+      <div class="map-footer-btns">
+        <button class="btn-navy" onclick="goIntro()">⬅️ Inicio</button>
+        <button class="btn-teal" onclick="window.print()">🖨️ Imprimir</button>
+        <button class="btn-coral" onclick="resetAdventure()">🔄 Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SCREEN 3: DESTINO ===== -->
+  <div id="screen-dest" class="screen">
+    <div id="destContent"></div>
+  </div>
+
   <div id="toast"></div>
+  <div id="confetti"></div>
+
   <script src="app.js"></script>
 </body>
 </html>

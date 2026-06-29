@@ -13,6 +13,7 @@ const DESTINATIONS = [
     badge: '🦅',
     badgeName: 'Explorador de Florida',
     color: '#063B63',
+    cardBg: 'linear-gradient(135deg, #0EA5A3 0%, #0CC5C2 100%)',
     story: 'Agente Juan Martín, bienvenido a Florida — la tierra de las palmeras gigantes, los flamencos y las pizzas enormes. Tu misión: conquistar este estado con valentía y curiosidad.',
     missions: [
       { id: 'fl_ingles',  icon: '⭐', name: 'Hablar con alguien en inglés',       pts: 10 },
@@ -30,6 +31,7 @@ const DESTINATIONS = [
     badge: '🌊',
     badgeName: 'Rey de la Playa',
     color: '#0EA5A3',
+    cardBg: 'linear-gradient(135deg, #FF9F45 0%, #FF6B6B 100%)',
     story: 'Agente Juan Martín, la playa está llena de pistas secretas. Busca animales, olas y tesoros escondidos en la arena. ¡El mar te está esperando!',
     missions: [
       { id: 'pl_amanecer', icon: '🌅', name: 'Ver un amanecer o atardecer',     pts: 10 },
@@ -47,6 +49,7 @@ const DESTINATIONS = [
     badge: '⚓',
     badgeName: 'Capitán del Crucero',
     color: '#1a4a7a',
+    cardBg: 'linear-gradient(135deg, #1a4a7a 0%, #0A5C9B 100%)',
     story: 'Agente Juan Martín, has subido a uno de los barcos más grandes del mundo. Tu misión: explorar cada rincón del crucero y descubrir sus secretos. ¡Zarpa, capitán!',
     missions: [
       { id: 'cr_explorar',    icon: '🛳️', name: 'Explorar el crucero de popa a proa',  pts: 10 },
@@ -64,6 +67,7 @@ const DESTINATIONS = [
     badge: '🎢',
     badgeName: 'Domador de Fieras',
     color: '#2d5a1b',
+    cardBg: 'linear-gradient(135deg, #2d8a1b 0%, #4CAF50 100%)',
     story: 'Agente Juan Martín, Busch Gardens es territorio salvaje. Aquí conviven animales increíbles y atracciones que ponen a prueba tu valentía. ¿Estás listo, explorador?',
     missions: [
       { id: 'bu_animal',    icon: '🦒', name: 'Ver un animal salvaje grande',        pts: 10 },
@@ -81,6 +85,7 @@ const DESTINATIONS = [
     badge: '🤿',
     badgeName: 'Explorador del Caribe',
     color: '#0a6e8a',
+    cardBg: 'linear-gradient(135deg, #0a6e8a 0%, #0DCFE0 100%)',
     story: 'Agente Juan Martín, el Caribe te llama con sus aguas azules y sus peces de colores. Esta isla guarda los secretos más bellos del mundo. ¡Sumérgete en la aventura!',
     missions: [
       { id: 'ca_pez',      icon: '🐠', name: 'Ver un pez tropical de colores',         pts: 10 },
@@ -99,6 +104,7 @@ const DESTINATIONS = [
     badgeName: 'Crack del Fútbol',
     type: 'mundial',
     color: '#1a5c3a',
+    cardBg: 'linear-gradient(135deg, #1a7a3a 0%, #4CAF50 100%)',
     story: 'Como en el Mundial, cada país tiene una bandera y cada aventura tiene una misión. ¡Llena tu ficha de campeón, Agente Juan Martín!',
     fields: [
       { id: 'wc_equipo',   label: 'Mi equipo campeón 🏆',                             placeholder: 'Ej: Colombia' },
@@ -117,6 +123,7 @@ const DESTINATIONS = [
     badgeName: 'Cronista del Viaje',
     type: 'recuerdos',
     color: '#2d4a6e',
+    cardBg: 'linear-gradient(135deg, #7B4FA6 0%, #B06FDC 100%)',
     story: '¡Felicidades, Agente Juan Martín! La Gran Expedición 2026 está llegando a su fin. Es hora de guardar los recuerdos más especiales para siempre.',
     fields: [
       { id: 'rc_dia',      label: 'Mi día favorito del viaje ☀️',                   placeholder: '¿Qué fue lo mejor de ese día?' },
@@ -311,24 +318,31 @@ function renderMap() {
   document.getElementById('xpFill').style.width    = pct + '%';
   document.getElementById('mapSub').textContent    = `${done} de ${total} misiones · ${pct}% del viaje`;
 
-  // Tarjetas de destino
-  document.getElementById('destGrid').innerHTML = DESTINATIONS.map(dest => {
+  // Tarjetas de destino — estilo nivel de videojuego
+  document.getElementById('destGrid').innerHTML = DESTINATIONS.map((dest, idx) => {
     const status  = getDestStatus(dest);
     const prog    = dest.missions ? getDestProgress(dest.id) : null;
     const sLabel  = status === 'done' ? '✅ Completado' : status === 'progress' ? '🔄 En progreso' : '🔒 No iniciado';
-    const sClass  = status === 'done' ? 's-done'       : status === 'progress' ? 's-progress'     : 's-locked';
+    const sClass  = status === 'done' ? 's-done' : status === 'progress' ? 's-progress' : 's-locked';
     const btnTxt  = status === 'done' ? '🏅 Ver destino' : status === 'progress' ? '▶️ Continuar misión' : '🌟 Entrar al destino';
+    const btnCls  = status === 'done' ? 'dest-btn dest-btn-green' : 'dest-btn dest-btn-teal';
     const pBarPct = prog ? prog.pct : (status === 'done' ? 100 : 0);
     const cntTxt  = prog ? `${prog.done} / ${prog.total} misiones` : (status === 'done' ? 'Completado ✅' : 'Listo para explorar');
 
     return `
       <div class="dest-card ${status === 'done' ? 'done' : ''}">
-        <span class="dest-icon">${dest.icon}</span>
-        <div class="dest-name">${dest.name}</div>
-        <div class="dest-count">${cntTxt}</div>
-        <div class="dest-pbar"><div class="dest-pbar-fill" style="width:${pBarPct}%"></div></div>
-        <span class="dest-status ${sClass}">${sLabel}</span>
-        <button class="dest-btn" onclick="goDest('${dest.id}')">${btnTxt}</button>
+        <div class="dest-card-top" style="background:${dest.cardBg || dest.color}">
+          <div class="dest-lvl-badge">NIVEL ${idx + 1}</div>
+          ${status === 'done' ? '<div class="dest-crown">👑</div>' : ''}
+          <span class="dest-card-icon">${dest.icon}</span>
+          <div class="dest-card-title">${dest.name}</div>
+        </div>
+        <div class="dest-card-body">
+          <div class="dest-count">${cntTxt}</div>
+          <div class="dest-pbar"><div class="dest-pbar-fill" style="width:${pBarPct}%"></div></div>
+          <span class="dest-status ${sClass}">${sLabel}</span>
+          <button class="${btnCls}" onclick="goDest('${dest.id}')">${btnTxt}</button>
+        </div>
       </div>
     `;
   }).join('');
@@ -366,25 +380,29 @@ function renderMissions(dest) {
 
     return `
       <div class="mission-card ${done ? 'done' : ''}" id="mc-${m.id}">
-        <div class="mission-top">
-          <div class="mission-ico">${m.icon}</div>
-          <div class="mission-info">
-            <div class="mission-name">${m.name}</div>
-            <div class="mission-pts">🌟 ${m.pts} puntos</div>
+        <div class="mission-strip"></div>
+        <div class="mission-body">
+          <div class="mission-top">
+            <div class="mission-ico-wrap">${m.icon}</div>
+            <div class="mission-info">
+              <div class="mission-name">${m.name}</div>
+              <div class="mission-pts">🌟 ${m.pts} puntos</div>
+            </div>
+            ${done ? '<div class="mission-check">✅</div>' : ''}
           </div>
-          ${done ? '<div class="mission-check">✅</div>' : ''}
-        </div>
-        ${done
-          ? `<button class="mission-btn done-state" disabled>✅ ¡Misión cumplida!</button>`
-          : `<button class="mission-btn" onclick="toggleMission('${m.id}','${dest.id}')">🎯 ¡Lo logré!</button>`
-        }
-        <textarea class="mission-note" placeholder="¿Qué pasó? Cuéntame todo..." oninput="saveNote('${m.id}',this.value)">${note}</textarea>
-        <div class="photo-area">
-          ${photoBlock}
-          <label class="btn-photo">
-            📷 ${photo ? 'Cambiar foto' : 'Subir foto'}
-            <input type="file" accept="image/*" class="file-inp" onchange="handlePhoto('${m.id}',this)">
-          </label>
+          ${done
+            ? `<button class="mission-btn done-state" disabled>✅ ¡Misión cumplida!</button>`
+            : `<button class="mission-btn" onclick="toggleMission('${m.id}','${dest.id}')">🎯 ¡Lo logré!</button>`
+          }
+          <div class="mission-note-label">✍️ ¿Qué pasó? Cuéntame todo…</div>
+          <textarea class="mission-note" placeholder="Escribe aquí tu aventura..." oninput="saveNote('${m.id}',this.value)">${note}</textarea>
+          <div class="photo-area">
+            ${photoBlock}
+            <label class="btn-photo">
+              📷 ${photo ? 'Cambiar foto' : 'Subir foto'}
+              <input type="file" accept="image/*" class="file-inp" onchange="handlePhoto('${m.id}',this)">
+            </label>
+          </div>
         </div>
       </div>
     `;
@@ -534,10 +552,14 @@ function toggleMission(missionId, destId) {
   state.done[missionId] = true;
   saveState();
 
-  // Actualizar tarjeta sin re-render completo
+  // Actualizar tarjeta en-place
   const card = document.getElementById('mc-' + missionId);
   if (card) {
     card.classList.add('done');
+    const strip = card.querySelector('.mission-strip');
+    if (strip) strip.style.background = 'linear-gradient(90deg, var(--green), #A8EEC0)';
+    const icoWrap = card.querySelector('.mission-ico-wrap');
+    if (icoWrap) icoWrap.style.background = '#D4F5E0';
     const btn = card.querySelector('.mission-btn');
     if (btn) {
       btn.className = 'mission-btn done-state';

@@ -11,12 +11,48 @@
   <!-- ===== SCREEN 1: INTRO ===== -->
   <div id="screen-intro" class="screen active">
     <div class="intro-bg">
+
+      <!-- Emojis flotantes de fondo -->
+      <div class="intro-deco" aria-hidden="true">
+        <span style="--x:6%;--y:10%;--s:36px;--dur:3.2s;--rot:−10deg">🌴</span>
+        <span style="--x:83%;--y:5%;--s:30px;--dur:2.6s;--rot:8deg">⭐</span>
+        <span style="--x:88%;--y:55%;--s:32px;--dur:3.8s;--rot:−6deg">🌊</span>
+        <span style="--x:3%;--y:60%;--s:28px;--dur:3.5s;--rot:12deg">⚽</span>
+        <span style="--x:86%;--y:80%;--s:30px;--dur:2.9s;--rot:−8deg">🦁</span>
+        <span style="--x:10%;--y:84%;--s:32px;--dur:4.1s;--rot:6deg">🛳️</span>
+        <span style="--x:50%;--y:3%;--s:26px;--dur:3.0s;--rot:−4deg">✨</span>
+        <span style="--x:68%;--y:28%;--s:24px;--dur:4.0s;--rot:10deg">🐠</span>
+        <span style="--x:22%;--y:32%;--s:22px;--dur:2.4s;--rot:−12deg">⭐</span>
+        <span style="--x:40%;--y:88%;--s:28px;--dur:3.6s;--rot:5deg">🏖️</span>
+        <span style="--x:75%;--y:68%;--s:24px;--dur:2.8s;--rot:−9deg">✈️</span>
+      </div>
+
       <div class="intro-inner">
+        <!-- Pill badge -->
         <div class="intro-pill">🌎 La Gran Expedición 2026</div>
-        <div class="intro-emoji">🧒🏻</div>
+
+        <!-- Avatar -->
+        <div class="intro-avatar-wrap">
+          <div class="intro-avatar-ring"></div>
+          <div class="intro-avatar">🧒🏻</div>
+        </div>
+
+        <!-- Título -->
         <h1 class="intro-h1">Las Aventuras del<br><span>Agente Juan Martín</span></h1>
-        <p class="intro-p">Mamá recibió una misión ultrasecreta. Solo un explorador muy valiente podía completarla. <strong>Ese explorador eres tú.</strong></p>
-        <button class="btn-xl" onclick="goMap()">🗺️ Empezar aventura</button>
+
+        <!-- Historia -->
+        <p class="intro-p">
+          📜 Mamá recibió una misión ultrasecreta.<br>
+          Solo un explorador muy valiente podía completarla.<br>
+          <strong>Ese explorador eres tú.</strong>
+        </p>
+
+        <!-- Botón GRANDE -->
+        <button class="btn-xl" onclick="goMap()">
+          🗺️ ¡EMPEZAR AVENTURA!
+        </button>
+
+        <!-- Stats -->
         <div class="intro-stats" id="introStats"></div>
       </div>
     </div>
@@ -38,16 +74,19 @@
       </div>
     </div>
     <div class="xp-wrap"><div class="xp-fill" id="xpFill"></div></div>
+
     <div class="map-inner">
       <div class="map-title-row">
         <h2>🗺️ Mi mapa de aventura</h2>
         <div class="map-sub" id="mapSub">0 misiones completadas</div>
       </div>
       <div id="destGrid" class="dest-grid"></div>
+
       <div class="badges-wrap">
         <h2>🏅 Mis insignias</h2>
         <div id="badgesGrid" class="badges-grid"></div>
       </div>
+
       <div class="map-footer-btns">
         <button class="btn-navy" onclick="goIntro()">⬅️ Inicio</button>
         <button class="btn-teal" onclick="window.print()">🖨️ Imprimir</button>

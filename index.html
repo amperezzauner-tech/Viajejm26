@@ -12,45 +12,27 @@
       <p class="badge">La Gran Expedición 2026</p>
       <h1>Las Aventuras del Agente<br><span>Juan Martín</span></h1>
       <p class="story">Mamá recibió una misión ultrasecreta. Solo un explorador muy valiente podía completarla. Ese explorador eres tú.</p>
-      <button id="resetBtn" class="ghost">Reiniciar aventura</button>
     </div>
     <div class="agent-card">
       <div class="avatar">🧒🏻</div>
       <h2>Agente Juan Martín</h2>
-      <p>Nivel <span id="level">1</span> ⭐</p>
+      <p class="big">Nivel <span id="level">1</span> ⭐</p>
       <div class="xp"><div id="xpBar"></div></div>
-      <p id="xpText">0 / 600 XP</p>
+      <p id="xpText">0 / 195 puntos</p>
+      <p id="rankText">Explorador Junior</p>
     </div>
   </header>
-
+  <nav class="topbar">
+    <a href="#tablero">📊 Tablero</a><a href="#misiones">🎯 Misiones</a><a href="#mundial">⚽ Mundial</a><a href="#diario">📘 Diario</a>
+  </nav>
   <main>
+    <section id="tablero" class="panel dashboard"><h2>📊 Mi tablero de explorador</h2><div class="scoreBox"><div><b id="scoreBig">0</b><span>puntos</span></div><div><b id="doneBig">0</b><span>misiones</span></div><div><b id="badgeBig">0</b><span>insignias</span></div></div></section>
     <section class="panel"><h2>🗺️ Progreso del viaje</h2><div id="progressList"></div></section>
     <section class="panel"><h2>🏅 Mis insignias</h2><div id="badges"></div></section>
-
-    <section class="panel">
-      <h2>⚽ Mundial de aventuras</h2>
-      <p>Como en el Mundial, cada país tiene su bandera. Escribe tus favoritos del Mundial 2026.</p>
-      <div class="worldcup">
-        <label>Mi equipo campeón <input placeholder="Ej: Colombia" /></label>
-        <label>Mi goleador favorito <input placeholder="Nombre" /></label>
-        <label>Mi marcador loco <input placeholder="Ej: 3-2" /></label>
-      </div>
-    </section>
-
-    <section class="panel"><h2>🎯 Misiones</h2><div id="missions" class="missions"></div></section>
-
-    <section class="panel">
-      <h2>📸 Diario rápido</h2>
-      <p>Para llenar cada noche con mamá o papá.</p>
-      <textarea id="diary" placeholder="Hoy mi aventura favorita fue..."></textarea>
-      <button id="saveDiary">Guardar diario</button>
-    </section>
-
-    <section class="panel">
-      <h2>🏆 Diploma</h2>
-      <p id="diplomaText">Completa misiones para convertirte en Explorador Supremo.</p>
-      <button onclick="window.print()">Imprimir / Guardar PDF</button>
-    </section>
+    <section id="mundial" class="panel"><h2>⚽ Mundial de aventuras</h2><p>Como en el Mundial, cada país tiene su bandera. Escribe tus favoritos del Mundial 2026.</p><div class="worldcup"><label>Mi equipo campeón <input id="wc1" placeholder="Ej: Colombia" /></label><label>Mi goleador favorito <input id="wc2" placeholder="Nombre" /></label><label>Mi marcador loco <input id="wc3" placeholder="Ej: 3-2" /></label></div><button id="saveWorldcup">Guardar Mundial</button></section>
+    <section id="misiones" class="panel"><h2>🎯 Misiones</h2><p class="hint">Cuando Juan toque “¡Lo logré!”, el tablero, las barras y las insignias se actualizan automáticamente.</p><div id="missions" class="missions"></div></section>
+    <section id="diario" class="panel"><h2>📘 Diario rápido</h2><p>Para llenar cada noche con mamá o papá.</p><textarea id="diary" placeholder="Hoy mi aventura favorita fue..."></textarea><button id="saveDiary">Guardar diario</button></section>
+    <section class="panel"><h2>🏆 Diploma</h2><p id="diplomaText">Completa misiones para convertirte en Explorador Supremo.</p><button onclick="window.print()">Imprimir / Guardar PDF</button><button id="resetBtn" class="ghost">Reiniciar aventura</button></section>
   </main>
   <div id="toast"></div>
   <script src="app.js"></script>

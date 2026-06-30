@@ -750,10 +750,11 @@ input.file-inp { display: none; }
   .btn-teal, .btn-coral, .btn-navy, .map-footer-btns,
   #confetti, #toast, .mission-btn:not(.done-state),
   .btn-photo, .btn-save, input.file-inp,
-  .intro-deco { display: none !important; }
+  .intro-deco, .mission-center, .btn-player-save { display: none !important; }
   body { background: #fff; }
   .mission-card { break-inside: avoid; }
   .dest-hdr { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .album-section { break-inside: avoid; }
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -767,198 +768,222 @@ input.file-inp { display: none; }
   .btn-navy, .btn-teal, .btn-coral { text-align: center; }
   .stat-num { font-size: 32px; }
   .intro-avatar { font-size: 90px; }
+  .players-grid { grid-template-columns: 1fr; }
+  .match-grid   { grid-template-columns: 1fr; }
+  .mc-btn-row   { flex-direction: column; }
+  .btn-mc       { width: 100%; }
 }
 
+/* ══════════════════════════════════════════════════════════
+   CENTRO DE MISIONES (Hoy toca / Sorpresa / Energía / Álbum)
+══════════════════════════════════════════════════════════ */
+.mission-center {
+  background: #fff;
+  border: 3px solid var(--mint);
+  border-radius: 24px;
+  padding: 18px 20px;
+  margin-bottom: 28px;
+  box-shadow: 0 6px 20px rgba(6,59,99,.08);
+}
+.mission-center h2 { color: var(--navy); margin: 0 0 14px; font-size: 20px; font-weight: 900; }
+.energy-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.energy-label { font-size: 14px; font-weight: 800; color: var(--navy); white-space: nowrap; }
+.energy-bar { display: flex; gap: 4px; }
+.energy-bar span { font-size: 22px; filter: grayscale(1); opacity: .3; }
+.energy-bar span.on { filter: none; opacity: 1; }
+.mc-btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-mc {
+  flex: 1;
+  min-width: 140px;
+  border: none;
+  border-radius: 16px;
+  padding: 14px 12px;
+  font-size: 15px;
+  font-weight: 900;
+  cursor: pointer;
+  color: #fff;
+  transition: transform .1s;
+}
+.btn-mc:active { transform: scale(.96); }
+.btn-mc-teal  { background: linear-gradient(135deg, var(--teal), #0CC5C2); }
+.btn-mc-coral { background: linear-gradient(135deg, var(--coral), #FF4040); }
+.btn-mc-gold  { background: linear-gradient(135deg, #FFD700, #FFA500); color: var(--navy); }
 
-/* ============================================================
-   FIX VISUAL — iPad / tablet landscape / mobile polish
-   Motivo: en iPad landscape se veía "partido" porque el layout
-   quedaba muy ancho y los elementos flotantes invadían el espacio.
-   ============================================================ */
-
-.intro-bg {
-  min-height: 100svh;
-  padding: clamp(18px, 3vw, 36px) 16px;
-  align-items: center;
+/* ══════════════════════════════════════════════════════════
+   NANA — misión especial dentro de Florida
+══════════════════════════════════════════════════════════ */
+.mission-card.nana { border-color: #B06FDC; }
+.mission-card.nana .mission-strip { background: linear-gradient(90deg, #B06FDC, #E0B0F5); }
+.mission-card.nana .mission-ico-wrap { background: #F3E5FF; }
+.nana-tag {
+  display: inline-block;
+  background: #F3E5FF;
+  color: #7B4FA6;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 3px 10px;
+  margin-bottom: 8px;
 }
 
-.intro-inner {
-  max-width: 760px;
-  margin: 0 auto;
+/* ══════════════════════════════════════════════════════════
+   MUNDIAL — APUESTA FAMILIAR
+══════════════════════════════════════════════════════════ */
+.match-card {
+  background: #fff;
+  border: 3px solid var(--mint);
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.match-card h3 { color: var(--navy); margin: 0 0 12px; font-size: 18px; font-weight: 900; }
+.match-grid {
   display: grid;
-  justify-items: center;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.match-grid .full { grid-column: 1 / -1; }
+.match-grid label { display: block; font-size: 13px; font-weight: 800; color: var(--navy); margin-bottom: 5px; }
+.match-grid input {
+  width: 100%;
+  border: 2px solid #CDEAF0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 15px;
+  font-family: inherit;
+}
+.match-grid input:focus { outline: none; border-color: var(--teal); }
+.score-row { display: flex; align-items: center; gap: 10px; justify-content: center; margin: 8px 0 4px; }
+.score-row input {
+  width: 64px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--navy);
+  border: 2px solid #CDEAF0;
+  border-radius: 12px;
+  padding: 8px 4px;
+}
+.score-vs { font-size: 20px; font-weight: 900; color: var(--teal); }
+
+/* Player bet cards */
+.players-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.player-card {
+  background: var(--sand);
+  border: 3px solid #BDEAF1;
+  border-radius: 20px;
+  padding: 16px;
+}
+.player-card-hdr { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.player-emoji { font-size: 36px; }
+.player-name-inp {
+  font-size: 17px;
+  font-weight: 900;
+  color: var(--navy);
+  border: none;
+  border-bottom: 2px solid var(--teal);
+  background: transparent;
+  padding: 4px 2px;
+  width: 100%;
+}
+.player-name-inp:focus { outline: none; }
+.player-field { margin-bottom: 10px; }
+.player-field label { display: block; font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 4px; }
+.player-field input, .player-field select {
+  width: 100%;
+  border: 2px solid #CDEAF0;
+  border-radius: 10px;
+  padding: 9px 10px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+.player-score-row { display: flex; align-items: center; gap: 8px; }
+.player-score-row input { width: 100%; text-align: center; font-weight: 800; }
+.player-score-row span { font-weight: 900; color: var(--teal); }
+.btn-player-save {
+  width: 100%;
+  background: linear-gradient(135deg, var(--navy), #0A5C9B);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 11px;
+  font-weight: 900;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 4px;
+}
+.player-card.saved { border-color: var(--green); }
+.player-saved-tag { font-size: 12px; color: var(--green); font-weight: 800; margin-top: 6px; text-align: center; }
+
+/* Ranking */
+.ranking-wrap {
+  background: #fff;
+  border: 3px solid var(--gold);
+  border-radius: 22px;
+  padding: 18px;
+  margin-bottom: 20px;
+}
+.ranking-wrap h3 { color: var(--navy); margin: 0 0 14px; font-size: 18px; font-weight: 900; }
+.ranking-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  margin-bottom: 8px;
+  background: var(--mint);
+}
+.ranking-row.gold   { background: linear-gradient(135deg, #FFF3C4, #FFE08A); }
+.ranking-row.silver { background: linear-gradient(135deg, #EDEDED, #D8D8D8); }
+.ranking-row.bronze { background: linear-gradient(135deg, #F3D9C0, #E0B488); }
+.ranking-medal { font-size: 26px; }
+.ranking-name  { flex: 1; font-weight: 800; color: var(--navy); font-size: 15px; }
+.ranking-pts   { font-weight: 900; color: var(--teal); font-size: 16px; }
+.plush-banner {
+  background: linear-gradient(135deg, #FFD700, #FFA500);
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: center;
+  font-weight: 900;
+  color: var(--navy);
+  margin-bottom: 8px;
 }
 
-.intro-avatar-wrap {
-  margin-bottom: 4px;
+/* Mundial badges */
+.mundial-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.intro-avatar {
-  font-size: clamp(68px, 8vw, 108px);
+/* ══════════════════════════════════════════════════════════
+   ÁLBUM FINAL
+══════════════════════════════════════════════════════════ */
+.album-view { min-height: 100vh; background: var(--bg); }
+.album-hdr {
+  background: linear-gradient(135deg, var(--navy), #0A5C9B);
+  color: #fff;
+  padding: 20px 18px 30px;
+  text-align: center;
 }
-
-.intro-h1 {
-  max-width: 760px;
-  font-size: clamp(34px, 6.1vw, 72px);
-  line-height: .96;
-  margin: 6px 0 12px;
+.album-hdr h1 { font-size: 26px; margin: 8px 0 4px; }
+.album-inner { padding: 20px; max-width: 760px; margin: 0 auto; }
+.album-section {
+  background: #fff;
+  border: 2px solid var(--mint);
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 16px;
 }
-
-.intro-h1 span {
-  font-size: .58em;
-  line-height: 1.05;
-}
-
-.intro-p {
-  max-width: 620px;
-  width: min(620px, 92vw);
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
-}
-
-.btn-xl {
-  width: min(460px, 86vw);
-  margin-bottom: 18px;
-}
-
-.intro-stats {
-  width: min(620px, 92vw);
-}
-
-.intro-deco span {
-  opacity: .32;
-}
-
-/* El "sol" de fondo estaba quedando demasiado grande en iPad */
-.intro-bg::before {
-  width: clamp(170px, 23vw, 330px);
-  height: clamp(170px, 23vw, 330px);
-  top: -55px;
-  left: -45px;
-  opacity: .75;
-}
-
-.intro-bg::after {
-  width: clamp(150px, 18vw, 260px);
-  height: clamp(150px, 18vw, 260px);
-  opacity: .65;
-}
-
-/* Tablet landscape: llenar la pantalla mejor, sin verse raro */
-@media (min-width: 768px) and (max-width: 1180px) and (orientation: landscape) {
-  .intro-bg {
-    padding: 18px 24px 24px;
-  }
-
-  .intro-inner {
-    max-width: 720px;
-  }
-
-  .intro-pill {
-    margin-bottom: 8px;
-    padding: 8px 18px;
-  }
-
-  .intro-avatar-wrap {
-    display: none; /* en landscape ocupaba espacio y desbalanceaba */
-  }
-
-  .intro-h1 {
-    font-size: clamp(44px, 5.3vw, 66px);
-    max-width: 700px;
-    margin-top: 0;
-  }
-
-  .intro-h1 span {
-    font-size: .52em;
-  }
-
-  .intro-p {
-    font-size: 16px;
-    line-height: 1.45;
-    padding: 13px 18px;
-    margin-bottom: 16px;
-  }
-
-  .btn-xl {
-    padding: 15px 20px;
-    font-size: 22px;
-    border-radius: 18px;
-    margin-bottom: 14px;
-  }
-
-  .intro-stats {
-    padding: 14px;
-  }
-
-  .stat-box {
-    padding: 10px 6px;
-  }
-
-  .stat-num {
-    font-size: 32px;
-  }
-
-  .rank-banner {
-    padding: 9px 12px;
-  }
-
-  .total-bar {
-    height: 18px;
-  }
-}
-
-/* Celular real */
-@media (max-width: 560px) {
-  .intro-bg {
-    padding: 22px 14px 30px;
-  }
-
-  .intro-avatar {
-    font-size: 78px;
-  }
-
-  .intro-h1 {
-    font-size: clamp(30px, 12vw, 48px);
-  }
-
-  .intro-h1 span {
-    font-size: .62em;
-  }
-
-  .intro-p {
-    width: 100%;
-    font-size: 15px;
-    line-height: 1.45;
-    padding: 14px;
-  }
-
-  .stats-grid {
-    gap: 8px;
-  }
-
-  .stat-box {
-    padding: 10px 4px;
-  }
-
-  .stat-num {
-    font-size: 30px;
-  }
-
-  .stat-lbl {
-    font-size: 11px;
-  }
-
-  .map-inner,
-  .missions-wrap,
-  .form-wrap {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-
-  .dest-grid,
-  .missions-grid {
-    grid-template-columns: 1fr;
-  }
-}
+.album-section h3 { color: var(--navy); margin: 0 0 10px; font-size: 17px; font-weight: 900; }
+.album-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed #D7F3F7; font-size: 14px; }
+.album-row:last-child { border-bottom: none; }
+.album-row b { color: var(--navy); }

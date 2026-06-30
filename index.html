@@ -82,6 +82,19 @@
       </div>
       <div id="destGrid" class="dest-grid"></div>
 
+      <div class="mission-center">
+        <h2>🧭 Centro de misiones</h2>
+        <div class="energy-row">
+          <span class="energy-label">🔋 Energía de explorador</span>
+          <div class="energy-bar" id="energyBar"></div>
+        </div>
+        <div class="mc-btn-row">
+          <button class="btn-mc btn-mc-teal" onclick="doHoyToca()">🎯 Hoy toca</button>
+          <button class="btn-mc btn-mc-coral" onclick="doSorpresa()">🎲 Misión sorpresa</button>
+          <button class="btn-mc btn-mc-gold" onclick="goAlbum()">📖 Álbum final</button>
+        </div>
+      </div>
+
       <div class="badges-wrap">
         <h2>🏅 Mis insignias</h2>
         <div id="badgesGrid" class="badges-grid"></div>
@@ -98,6 +111,11 @@
   <!-- ===== SCREEN 3: DESTINO ===== -->
   <div id="screen-dest" class="screen">
     <div id="destContent"></div>
+  </div>
+
+  <!-- ===== SCREEN 4: ÁLBUM FINAL ===== -->
+  <div id="screen-album" class="screen">
+    <div id="albumContent"></div>
   </div>
 
   <div id="toast"></div>

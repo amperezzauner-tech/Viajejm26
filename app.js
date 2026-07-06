@@ -149,6 +149,70 @@ const TOTAL_MISSION_PTS = DESTINATIONS
 
 const TOTAL_PTS = TOTAL_MISSION_PTS + 20; // +10 mundial (apuesta), +10 recuerdos
 
+// ==================== ZONA DE JUEGOS — DATOS ====================
+
+const WORDSEARCHES = {
+  mundial1: {
+    title: 'Selecciones del Mundial',
+    size: 12,
+    words: ['BRASIL', 'MEXICO', 'ESPANA', 'FRANCIA', 'COLOMBIA', 'ALEMANIA', 'ARGENTINA', 'CANADA'],
+  },
+  mundial2: {
+    title: 'Palabras del fútbol',
+    size: 10,
+    words: ['BALON', 'ARBITRO', 'PORTERO', 'EQUIPO', 'CANCHA', 'PENAL', 'GOL', 'COPA'],
+  },
+};
+
+const CROSSWORDS = {
+  futbol1: {
+    title: 'Crucigrama de fútbol 1',
+    words: [
+      { num: 1, word: 'BALON', row: 0, col: 2, dir: 'V', clue: 'Objeto redondo con el que se juega al fútbol' },
+      { num: 2, word: 'ARCO',  row: 1, col: 2, dir: 'H', clue: 'Tiene dos postes y un travesaño; ahí debe entrar el balón' },
+      { num: 3, word: 'GOL',   row: 2, col: 0, dir: 'H', clue: '¡Se grita con alegría cuando el balón entra en la portería!' },
+      { num: 4, word: 'COPA',  row: 3, col: 1, dir: 'H', clue: 'Trofeo que levanta el equipo campeón' },
+    ],
+  },
+  futbol2: {
+    title: 'Crucigrama de fútbol 2',
+    words: [
+      { num: 1, word: 'EQUIPO', row: 0, col: 0, dir: 'H', clue: 'Grupo de jugadores que compiten juntos' },
+      { num: 2, word: 'PASE',   row: 0, col: 4, dir: 'V', clue: 'Cuando un jugador le entrega el balón a otro' },
+      { num: 3, word: 'CAMPO',  row: 1, col: 3, dir: 'H', clue: 'Lugar donde se juegan los partidos de fútbol' },
+      { num: 4, word: 'RED',    row: 3, col: 3, dir: 'H', clue: 'Está detrás del arco; ahí cae el balón cuando es gol' },
+    ],
+  },
+};
+
+const MATH_LEVELS = {
+  facil: { label: 'Sumas fáciles (hasta 10)', max: 10, count: 8 },
+  medio: { label: 'Sumas medianas (hasta 50)', max: 50, count: 8 },
+};
+
+const READINGS = {
+  worldcup: {
+    title: 'The Big World Cup Trip',
+    text: 'Juan Martín is going on a big trip. First, he flies on an airplane to Florida. In Florida, he visits his grandmother, Nana. Then, the family goes to a World Cup soccer game. Juan Martín wears a green and yellow shirt. He eats popcorn and cheers for his favorite team. After the game, the family takes a cruise ship to the Caribbean Sea. Juan Martín sees colorful fish and blue water. It is the best trip ever!',
+    questions: [
+      { q: 'How does Juan Martín travel to Florida?', options: ['By car', 'By airplane', 'By train'], correct: 1 },
+      { q: 'Who does he visit in Florida?', options: ['His teacher', 'His grandmother', 'His friend'], correct: 1 },
+      { q: 'What does he eat at the soccer game?', options: ['Pizza', 'Popcorn', 'Ice cream'], correct: 1 },
+      { q: 'Where does the cruise ship go?', options: ['The Caribbean Sea', 'The Pacific Ocean', 'A lake'], correct: 0 },
+    ],
+  },
+  beach: {
+    title: 'A Day at the Beach',
+    text: 'Today, Juan Martín is at a beautiful beach in the Caribbean. The sand is soft and white. The water is warm and blue. He puts on his snorkel mask and looks under the water. He sees orange fish, a sea turtle, and a starfish. Later, he builds a big sandcastle with his family. Before the sun goes down, they watch the waves together. What a wonderful day!',
+    questions: [
+      { q: 'What color is the sand?', options: ['Black', 'White', 'Red'], correct: 1 },
+      { q: 'What does Juan Martín use to see under the water?', options: ['A camera', 'A snorkel mask', 'Sunglasses'], correct: 1 },
+      { q: 'Which sea animal does he NOT see?', options: ['A sea turtle', 'A starfish', 'A dolphin'], correct: 2 },
+      { q: 'What does he build with his family?', options: ['A sandcastle', 'A boat', 'A tower'], correct: 0 },
+    ],
+  },
+};
+
 // ==================== ESTADO (con migración segura) ====================
 
 function defaultState() {
@@ -170,6 +234,7 @@ function defaultState() {
     flight: {},
     plushName: 'Peluche',
     settings: { pinHash: null },
+    games: { wordsearch: {}, crossword: {}, math: {}, reading: {} },
   };
 }
 
@@ -296,6 +361,7 @@ function goIntro() { renderIntro(); showScreen('intro'); }
 function goMap()   { renderMap();   showScreen('map'); }
 function goDest(destId) { renderDestination(destId); showScreen('dest'); }
 function goAlbum() { renderAlbum(); showScreen('album'); }
+function goGames() { renderGamesMenu(); showScreen('games'); }
 
 // ==================== PANTALLA INTRO ====================
 
@@ -1020,6 +1086,431 @@ function renderAlbum() {
       </div>
     </div>
   `;
+}
+
+// ==================== ZONA DE JUEGOS ====================
+
+function ensureGamesState() {
+  if (!state.games) state.games = { wordsearch: {}, crossword: {}, math: {}, reading: {} };
+}
+
+function gameCard(title, icon, onclick, done) {
+  return `
+    <div class="game-card ${done ? 'done' : ''}" onclick="${onclick}">
+      <span class="game-card-icon">${icon}</span>
+      <div class="game-card-title">${escHtml(title)}</div>
+      ${done ? '<div class="game-card-check">✅ ¡Completado!</div>' : '<div class="game-card-cta">▶️ Jugar</div>'}
+    </div>
+  `;
+}
+
+function renderGamesMenu() {
+  ensureGamesState();
+
+  const wsHTML = Object.entries(WORDSEARCHES).map(([id, ws]) =>
+    gameCard(ws.title, '🔤', `renderWordSearch('${id}')`, !!(state.games.wordsearch[id] && state.games.wordsearch[id].done))
+  ).join('');
+
+  const cwHTML = Object.entries(CROSSWORDS).map(([id, cw]) =>
+    gameCard(cw.title, '🧩', `renderCrossword('${id}')`, !!state.games.crossword[id])
+  ).join('');
+
+  const mathHTML = Object.entries(MATH_LEVELS).map(([id, cfg]) =>
+    gameCard(cfg.label, '➕', `renderMath('${id}')`, (state.games.math[id] || 0) >= cfg.count)
+  ).join('');
+
+  const readHTML = Object.entries(READINGS).map(([id, r]) =>
+    gameCard(r.title, '📖', `renderReading('${id}')`, (state.games.reading[id] || 0) >= r.questions.length)
+  ).join('');
+
+  document.getElementById('gamesContent').innerHTML = `
+    <div class="dest-view">
+      <div class="dest-hdr" style="background: linear-gradient(135deg, #7B4FA6, #B06FDC)">
+        <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
+        <span class="dest-hdr-icon">🎮</span>
+        <div class="dest-hdr-title">Zona de Juegos</div>
+        <div class="dest-hdr-story">Agente Juan Martín, entrena tu mente antes de la próxima misión. ¡Elige un juego!</div>
+      </div>
+      <div class="games-wrap">
+        <h3 class="games-cat-title">🔤 Sopas de letras</h3>
+        <div class="games-grid">${wsHTML}</div>
+        <h3 class="games-cat-title">🧩 Crucigramas de fútbol</h3>
+        <div class="games-grid">${cwHTML}</div>
+        <h3 class="games-cat-title">➕ Sumas</h3>
+        <div class="games-grid">${mathHTML}</div>
+        <h3 class="games-cat-title">📖 Lecturas en inglés</h3>
+        <div class="games-grid">${readHTML}</div>
+      </div>
+      <div class="dest-footer"><button class="btn-back-map" onclick="goMap()">⬅️ Volver al mapa de aventura</button></div>
+    </div>
+  `;
+}
+
+/* ----- Sopa de letras ----- */
+
+let _wsCache = {};
+let wsSelecting = false;
+let wsStartCell = null;
+let wsCurrentId = null;
+let wsSelectedCells = [];
+
+function generateWordSearchGrid(words, size) {
+  const grid = Array.from({ length: size }, () => Array(size).fill(null));
+  const dirs = [[0, 1], [1, 0], [1, 1], [1, -1]];
+  const placements = [];
+
+  words.forEach(word => {
+    let placed = false, attempts = 0;
+    while (!placed && attempts < 300) {
+      attempts++;
+      const [dr, dc] = dirs[Math.floor(Math.random() * dirs.length)];
+      const r0 = Math.floor(Math.random() * size);
+      const c0 = Math.floor(Math.random() * size);
+      const rEnd = r0 + dr * (word.length - 1);
+      const cEnd = c0 + dc * (word.length - 1);
+      if (rEnd < 0 || rEnd >= size || cEnd < 0 || cEnd >= size) continue;
+
+      let ok = true;
+      for (let i = 0; i < word.length; i++) {
+        const r = r0 + dr * i, c = c0 + dc * i;
+        if (grid[r][c] !== null && grid[r][c] !== word[i]) { ok = false; break; }
+      }
+      if (!ok) continue;
+
+      for (let i = 0; i < word.length; i++) {
+        const r = r0 + dr * i, c = c0 + dc * i;
+        grid[r][c] = word[i];
+      }
+      placements.push({ word, cells: Array.from({ length: word.length }, (_, i) => [r0 + dr * i, c0 + dc * i]) });
+      placed = true;
+    }
+  });
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < size; r++) {
+    for (let c = 0; c < size; c++) {
+      if (grid[r][c] === null) grid[r][c] = letters[Math.floor(Math.random() * letters.length)];
+    }
+  }
+  return { grid, placements };
+}
+
+function renderWordSearch(id) {
+  ensureGamesState();
+  const ws = WORDSEARCHES[id];
+  if (!state.games.wordsearch[id]) state.games.wordsearch[id] = { found: [], done: false };
+  const progress = state.games.wordsearch[id];
+
+  if (!_wsCache[id]) _wsCache[id] = generateWordSearchGrid(ws.words, ws.size);
+  const { grid, placements } = _wsCache[id];
+
+  let cellsHTML = '';
+  for (let r = 0; r < ws.size; r++) {
+    for (let c = 0; c < ws.size; c++) {
+      const isFound = placements.some(p => progress.found.includes(p.word) && p.cells.some(([pr, pc]) => pr === r && pc === c));
+      cellsHTML += `<div class="ws-cell ${isFound ? 'found' : ''}" data-row="${r}" data-col="${c}" onpointerdown="wsPointerDown('${id}',${r},${c},event)">${grid[r][c]}</div>`;
+    }
+  }
+
+  const wordsHTML = ws.words.map(w => `<span class="ws-word ${progress.found.includes(w) ? 'found' : ''}">${w}</span>`).join('');
+
+  document.getElementById('gamesContent').innerHTML = `
+    <div class="dest-view">
+      <div class="dest-hdr" style="background: linear-gradient(135deg, #7B4FA6, #B06FDC)">
+        <button class="dest-hdr-back" onclick="renderGamesMenu()">⬅️ Volver a juegos</button>
+        <span class="dest-hdr-icon">🔤</span>
+        <div class="dest-hdr-title">${escHtml(ws.title)}</div>
+        <div class="dest-hdr-story">Desliza el dedo o arrastra el mouse sobre las letras para encontrar cada palabra.</div>
+      </div>
+      <div class="form-wrap">
+        <div class="ws-board" style="grid-template-columns: repeat(${ws.size}, 1fr);">${cellsHTML}</div>
+        <div class="ws-words">${wordsHTML}</div>
+      </div>
+      <div class="dest-footer"><button class="btn-back-map" onclick="goMap()">⬅️ Volver al mapa de aventura</button></div>
+    </div>
+  `;
+}
+
+function wsPointerDown(id, r, c, e) {
+  e.preventDefault();
+  wsSelecting = true;
+  wsCurrentId = id;
+  wsStartCell = [r, c];
+  wsSelectedCells = [[r, c]];
+  wsRenderSelection();
+  document.addEventListener('pointermove', wsPointerMove);
+  document.addEventListener('pointerup', wsPointerUp);
+}
+
+function wsPointerMove(e) {
+  if (!wsSelecting) return;
+  const el = document.elementFromPoint(e.clientX, e.clientY);
+  const cell = el && el.closest ? el.closest('.ws-cell') : null;
+  if (!cell) return;
+  const r = +cell.dataset.row, c = +cell.dataset.col;
+  const [r0, c0] = wsStartCell;
+  const dr = r - r0, dc = c - c0;
+  if (dr !== 0 && dc !== 0 && Math.abs(dr) !== Math.abs(dc)) return; // solo líneas rectas o diagonales
+  const steps = Math.max(Math.abs(dr), Math.abs(dc));
+  const stepR = dr === 0 ? 0 : dr / Math.abs(dr);
+  const stepC = dc === 0 ? 0 : dc / Math.abs(dc);
+  const cells = [];
+  for (let i = 0; i <= steps; i++) cells.push([r0 + stepR * i, c0 + stepC * i]);
+  wsSelectedCells = cells;
+  wsRenderSelection();
+}
+
+function wsRenderSelection() {
+  document.querySelectorAll('.ws-cell.selecting').forEach(el => el.classList.remove('selecting'));
+  wsSelectedCells.forEach(([r, c]) => {
+    const el = document.querySelector(`.ws-cell[data-row="${r}"][data-col="${c}"]`);
+    if (el) el.classList.add('selecting');
+  });
+}
+
+function wsPointerUp() {
+  wsSelecting = false;
+  document.removeEventListener('pointermove', wsPointerMove);
+  document.removeEventListener('pointerup', wsPointerUp);
+  wsFinishSelection();
+}
+
+function wsFinishSelection() {
+  const id = wsCurrentId;
+  const ws = WORDSEARCHES[id];
+  const { grid } = _wsCache[id];
+  const letters = wsSelectedCells.map(([r, c]) => grid[r][c]).join('');
+  const reversed = letters.split('').reverse().join('');
+  const progress = state.games.wordsearch[id];
+  const match = ws.words.find(w => (w === letters || w === reversed) && !progress.found.includes(w));
+
+  document.querySelectorAll('.ws-cell.selecting').forEach(el => el.classList.remove('selecting'));
+  wsSelectedCells = [];
+
+  if (!match) return;
+
+  progress.found.push(match);
+  if (progress.found.length === ws.words.length) {
+    progress.done = true;
+    saveState();
+    launchConfetti();
+    showToast('🎉 ¡Sopa de letras completada!', 't-badge');
+  } else {
+    saveState();
+    showToast(`✅ ¡Encontraste ${match}!`, 't-success');
+  }
+  renderWordSearch(id);
+}
+
+/* ----- Crucigramas ----- */
+
+function buildCrosswordGrid(words) {
+  let maxR = 0, maxC = 0;
+  words.forEach(w => {
+    const endR = w.dir === 'V' ? w.row + w.word.length - 1 : w.row;
+    const endC = w.dir === 'H' ? w.col + w.word.length - 1 : w.col;
+    maxR = Math.max(maxR, endR);
+    maxC = Math.max(maxC, endC);
+  });
+  const grid = Array.from({ length: maxR + 1 }, () => Array(maxC + 1).fill(null));
+  const numbers = {};
+  words.forEach(w => {
+    numbers[w.row + ',' + w.col] = w.num;
+    for (let i = 0; i < w.word.length; i++) {
+      const r = w.dir === 'V' ? w.row + i : w.row;
+      const c = w.dir === 'H' ? w.col + i : w.col;
+      grid[r][c] = { letter: w.word[i] };
+    }
+  });
+  return { grid, numbers, rows: maxR + 1, cols: maxC + 1 };
+}
+
+function renderCrossword(id) {
+  ensureGamesState();
+  const cw = CROSSWORDS[id];
+  const { grid, numbers, rows, cols } = buildCrosswordGrid(cw.words);
+
+  let cellsHTML = '';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (!grid[r][c]) { cellsHTML += `<div class="cw-cell cw-blocked"></div>`; continue; }
+      const num = numbers[r + ',' + c];
+      cellsHTML += `
+        <div class="cw-cell">
+          ${num ? `<span class="cw-num">${num}</span>` : ''}
+          <input class="cw-input" id="cw-${id}-${r}-${c}" maxlength="1" autocomplete="off"
+                 oninput="handleCrosswordInput(event,'${id}',${r},${c})">
+        </div>`;
+    }
+  }
+
+  const cluesHTML = cw.words.map(w => `<li><strong>${w.num}.</strong> ${escHtml(w.clue)} <em>(${w.word.length} letras)</em></li>`).join('');
+
+  document.getElementById('gamesContent').innerHTML = `
+    <div class="dest-view">
+      <div class="dest-hdr" style="background: linear-gradient(135deg, #1a5c3a, #4CAF50)">
+        <button class="dest-hdr-back" onclick="renderGamesMenu()">⬅️ Volver a juegos</button>
+        <span class="dest-hdr-icon">🧩</span>
+        <div class="dest-hdr-title">${escHtml(cw.title)}</div>
+        <div class="dest-hdr-story">Lee las pistas y escribe las palabras en el crucigrama.</div>
+      </div>
+      <div class="form-wrap">
+        <div class="cw-board" style="grid-template-columns: repeat(${cols}, 1fr);">${cellsHTML}</div>
+        <ul class="cw-clues">${cluesHTML}</ul>
+        <button class="btn-save" onclick="checkCrossword('${id}')">✅ Revisar crucigrama</button>
+      </div>
+      <div class="dest-footer"><button class="btn-back-map" onclick="goMap()">⬅️ Volver al mapa de aventura</button></div>
+    </div>
+  `;
+}
+
+function handleCrosswordInput(e, id, r, c) {
+  e.target.value = e.target.value.toUpperCase().slice(-1);
+  e.target.classList.remove('cw-wrong');
+  if (e.target.value) {
+    const next = document.getElementById(`cw-${id}-${r}-${c + 1}`);
+    if (next) next.focus();
+  }
+}
+
+function checkCrossword(id) {
+  const cw = CROSSWORDS[id];
+  const { grid, rows, cols } = buildCrosswordGrid(cw.words);
+  let correct = 0, total = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      if (!grid[r][c]) continue;
+      total++;
+      const input = document.getElementById(`cw-${id}-${r}-${c}`);
+      const ok = input && input.value === grid[r][c].letter;
+      if (input) input.classList.toggle('cw-wrong', !ok);
+      if (ok) correct++;
+    }
+  }
+  if (correct === total) {
+    state.games.crossword[id] = true;
+    saveState();
+    launchConfetti();
+    showToast('🎉 ¡Crucigrama completado!', 't-badge');
+  } else {
+    showToast(`✍️ ${correct} de ${total} letras correctas`, 't-error');
+  }
+}
+
+/* ----- Sumas ----- */
+
+let _mathCache = {};
+
+function renderMath(level) {
+  ensureGamesState();
+  const cfg = MATH_LEVELS[level];
+  const problems = [];
+  for (let i = 0; i < cfg.count; i++) {
+    problems.push({ a: 1 + Math.floor(Math.random() * cfg.max), b: 1 + Math.floor(Math.random() * cfg.max) });
+  }
+  _mathCache[level] = problems;
+
+  const itemsHTML = problems.map((p, i) => `
+    <div class="math-item" id="math-item-${level}-${i}">
+      <span class="math-expr">${p.a} + ${p.b} =</span>
+      <input type="number" class="math-input" id="math-${level}-${i}" inputmode="numeric">
+    </div>
+  `).join('');
+
+  document.getElementById('gamesContent').innerHTML = `
+    <div class="dest-view">
+      <div class="dest-hdr" style="background: linear-gradient(135deg, #FF8C42, #FF6B35)">
+        <button class="dest-hdr-back" onclick="renderGamesMenu()">⬅️ Volver a juegos</button>
+        <span class="dest-hdr-icon">➕</span>
+        <div class="dest-hdr-title">${escHtml(cfg.label)}</div>
+        <div class="dest-hdr-story">Resuelve las sumas y presiona "Revisar" para ver tu puntaje.</div>
+      </div>
+      <div class="form-wrap">
+        <div class="math-list">${itemsHTML}</div>
+        <div id="mathScore" class="games-score"></div>
+        <button class="btn-save" onclick="checkMath('${level}')">✅ Revisar respuestas</button>
+        <button class="btn-navy games-again-btn" onclick="renderMath('${level}')">🔄 Nuevos problemas</button>
+      </div>
+      <div class="dest-footer"><button class="btn-back-map" onclick="goMap()">⬅️ Volver al mapa de aventura</button></div>
+    </div>
+  `;
+}
+
+function checkMath(level) {
+  const problems = _mathCache[level];
+  let correct = 0;
+  problems.forEach((p, i) => {
+    const input = document.getElementById(`math-${level}-${i}`);
+    const item = document.getElementById(`math-item-${level}-${i}`);
+    const ok = parseInt(input.value, 10) === p.a + p.b;
+    item.classList.toggle('math-correct', ok);
+    item.classList.toggle('math-wrong', !ok);
+    if (ok) correct++;
+  });
+  const total = problems.length;
+  if (!state.games.math[level] || correct > state.games.math[level]) {
+    state.games.math[level] = correct;
+    saveState();
+  }
+  document.getElementById('mathScore').textContent = `🌟 ${correct} de ${total} correctas (mejor puntaje: ${state.games.math[level]})`;
+  if (correct === total) { launchConfetti(); showToast('🎉 ¡Todas correctas!', 't-badge'); }
+  else showToast(`➕ ${correct} de ${total} correctas`, 't-success');
+}
+
+/* ----- Lecturas en inglés ----- */
+
+function renderReading(id) {
+  ensureGamesState();
+  const r = READINGS[id];
+  const qHTML = r.questions.map((q, qi) => `
+    <div class="reading-q" id="reading-q-${id}-${qi}">
+      <div class="reading-q-text">${qi + 1}. ${escHtml(q.q)}</div>
+      ${q.options.map((opt, oi) => `
+        <label class="reading-option">
+          <input type="radio" name="reading-${id}-${qi}" value="${oi}">
+          ${escHtml(opt)}
+        </label>
+      `).join('')}
+    </div>
+  `).join('');
+
+  document.getElementById('gamesContent').innerHTML = `
+    <div class="dest-view">
+      <div class="dest-hdr" style="background: linear-gradient(135deg, #1E90FF, #4FC3F7)">
+        <button class="dest-hdr-back" onclick="renderGamesMenu()">⬅️ Volver a juegos</button>
+        <span class="dest-hdr-icon">📖</span>
+        <div class="dest-hdr-title">${escHtml(r.title)}</div>
+        <div class="dest-hdr-story">Lee el texto en inglés y responde las preguntas.</div>
+      </div>
+      <div class="form-wrap">
+        <div class="reading-passage">${escHtml(r.text)}</div>
+        ${qHTML}
+        <div id="readingScore" class="games-score"></div>
+        <button class="btn-save" onclick="checkReading('${id}')">✅ Revisar respuestas</button>
+      </div>
+      <div class="dest-footer"><button class="btn-back-map" onclick="goMap()">⬅️ Volver al mapa de aventura</button></div>
+    </div>
+  `;
+}
+
+function checkReading(id) {
+  const r = READINGS[id];
+  let correct = 0;
+  r.questions.forEach((q, qi) => {
+    const selected = document.querySelector(`input[name="reading-${id}-${qi}"]:checked`);
+    const ok = !!selected && parseInt(selected.value, 10) === q.correct;
+    document.getElementById(`reading-q-${id}-${qi}`).classList.toggle('reading-correct', ok);
+    document.getElementById(`reading-q-${id}-${qi}`).classList.toggle('reading-wrong', !ok);
+    if (ok) correct++;
+  });
+  const total = r.questions.length;
+  if (!state.games.reading[id] || correct > state.games.reading[id]) {
+    state.games.reading[id] = correct;
+    saveState();
+  }
+  document.getElementById('readingScore').textContent = `🌟 ${correct} de ${total} correctas (mejor puntaje: ${state.games.reading[id]})`;
+  if (correct === total) { launchConfetti(); showToast('🎉 Reading complete!', 't-badge'); }
+  else showToast(`📖 ${correct} de ${total} correctas`, 't-success');
 }
 
 // ==================== REINICIAR ====================

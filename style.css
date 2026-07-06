@@ -574,6 +574,19 @@ body {
   pointer-events: auto;
 }
 .photo-placeholder { font-size: 14px; color: #7a99ab; margin-bottom: 8px; }
+.photo-locked {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal);
+  background: rgba(221,248,243,.5);
+  border: 2px dashed #BDEAF1;
+  border-radius: 12px;
+  padding: 30px 12px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+.photo-locked:hover { background: rgba(221,248,243,.85); }
 .btn-photo {
   display: inline-block;
   background: #fff;

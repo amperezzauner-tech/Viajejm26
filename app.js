@@ -169,6 +169,7 @@ function defaultState() {
     familyRanking: { mama: 0, papa: 0, juanmartin: 0, peluche: 0 },
     flight: {},
     plushName: 'Peluche',
+    settings: { pinHash: null },
   };
 }
 
@@ -189,6 +190,7 @@ function mergeDeep(base, saved) {
 }
 
 let state = loadState();
+let photosUnlocked = false; // se re-bloquea al recargar la página
 
 function loadState() {
   try {
@@ -437,9 +439,11 @@ function renderMissions(dest) {
     const done  = !!state.done[m.id];
     const note  = state.notes[m.id]  || '';
     const photo = state.photos[m.id] || '';
-    const photoBlock = photo
-      ? `<img class="photo-preview" src="${photo}" alt="foto misión" draggable="false" oncontextmenu="return false">`
-      : `<div class="photo-placeholder">📷 Aquí irá tu foto</div>`;
+    const photoBlock = !photo
+      ? `<div class="photo-placeholder">📷 Aquí irá tu foto</div>`
+      : photosUnlocked
+        ? `<img class="photo-preview" src="${photo}" alt="foto misión" draggable="false" oncontextmenu="return false">`
+        : `<div class="photo-locked" onclick="unlockPhotos(() => renderDestination('${dest.id}'))">🔒 Foto guardada — toca para ver con tu PIN</div>`;
 
     return `
       <div class="mission-card ${done ? 'done' : ''} ${m.nana ? 'nana' : ''}" id="mc-${m.id}">
@@ -728,7 +732,68 @@ function toggleMission(missionId, destId) {
 
 function saveNote(missionId, value) { state.notes[missionId] = value; saveState(); }
 
-// ==================== FOTOS ====================
+// ==================== FOTOS (protegidas con PIN) ====================
+
+function simpleHash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) { h = (h << 5) - h + str.charCodeAt(i); h |= 0; }
+  return h.toString(36);
+}
+
+/** Pide el PIN (o crea uno si no existe) y ejecuta onSuccess si se desbloquea. */
+function unlockPhotos(onSuccess) {
+  if (photosUnlocked) { onSuccess(); return; }
+
+  if (!state.settings.pinHash) {
+    const pin1 = prompt('🔒 Crea un PIN de 4 dígitos para proteger las fotos:');
+    if (pin1 === null) return;
+    if (!/^\d{4}$/.test(pin1)) { showToast('⚠️ El PIN debe tener 4 números', 't-error'); return; }
+    const pin2 = prompt('🔒 Confirma tu PIN:');
+    if (pin2 === null) return;
+    if (pin1 !== pin2) { showToast('⚠️ Los PIN no coinciden', 't-error'); return; }
+    state.settings.pinHash = simpleHash(pin1);
+    saveState();
+    photosUnlocked = true;
+    showToast('🔒 PIN creado. ¡Fotos protegidas!', 't-success');
+    onSuccess();
+    return;
+  }
+
+  const attempt = prompt('🔒 Ingresa el PIN para ver las fotos:');
+  if (attempt === null) return;
+  if (simpleHash(attempt) === state.settings.pinHash) {
+    photosUnlocked = true;
+    onSuccess();
+  } else {
+    showToast('⚠️ PIN incorrecto', 't-error');
+  }
+}
+
+/** Crear, cambiar o quitar el PIN de las fotos (botón en el mapa). */
+function changePin() {
+  if (state.settings.pinHash) {
+    const current = prompt('🔒 Ingresa el PIN actual:');
+    if (current === null) return;
+    if (simpleHash(current) !== state.settings.pinHash) { showToast('⚠️ PIN incorrecto', 't-error'); return; }
+  }
+  const pin1 = prompt('🔒 Nuevo PIN de 4 dígitos (déjalo vacío para quitar la protección):');
+  if (pin1 === null) return;
+  if (pin1 === '') {
+    state.settings.pinHash = null;
+    photosUnlocked = true;
+    saveState();
+    showToast('🔓 Protección con PIN desactivada', '');
+    return;
+  }
+  if (!/^\d{4}$/.test(pin1)) { showToast('⚠️ El PIN debe tener 4 números', 't-error'); return; }
+  const pin2 = prompt('🔒 Confirma el nuevo PIN:');
+  if (pin2 === null) return;
+  if (pin1 !== pin2) { showToast('⚠️ Los PIN no coinciden', 't-error'); return; }
+  state.settings.pinHash = simpleHash(pin1);
+  photosUnlocked = true;
+  saveState();
+  showToast('🔒 PIN actualizado', 't-success');
+}
 
 function handlePhoto(missionId, input) {
   const file = input.files[0];
@@ -923,7 +988,10 @@ function renderAlbum() {
 
         <div class="album-section">
           <h3>👵 Recuerdo con Nana</h3>
-          ${nanaPhoto ? `<img class="photo-preview" src="${nanaPhoto}" alt="Nana" style="margin-bottom:10px" draggable="false" oncontextmenu="return false">` : ''}
+          ${nanaPhoto ? (photosUnlocked
+            ? `<img class="photo-preview" src="${nanaPhoto}" alt="Nana" style="margin-bottom:10px" draggable="false" oncontextmenu="return false">`
+            : `<div class="photo-locked" onclick="unlockPhotos(() => renderAlbum())">🔒 Foto guardada — toca para ver con tu PIN</div>`
+          ) : ''}
           <div class="album-row"><span>Misiones con Nana completadas</span><b>${nanaDone.length}/${nanaMissions.length}</b></div>
           ${nanaNote ? `<p style="font-size:14px;color:var(--ink);margin-top:8px;">"${escHtml(nanaNote)}"</p>` : '<p style="font-size:13px;color:#7a99ab;">Aún no hay recuerdo escrito con Nana.</p>'}
         </div>

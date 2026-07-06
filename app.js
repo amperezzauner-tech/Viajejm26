@@ -438,7 +438,7 @@ function renderMissions(dest) {
     const note  = state.notes[m.id]  || '';
     const photo = state.photos[m.id] || '';
     const photoBlock = photo
-      ? `<img class="photo-preview" src="${photo}" alt="foto misión">`
+      ? `<img class="photo-preview" src="${photo}" alt="foto misión" draggable="false" oncontextmenu="return false">`
       : `<div class="photo-placeholder">📷 Aquí irá tu foto</div>`;
 
     return `
@@ -923,7 +923,7 @@ function renderAlbum() {
 
         <div class="album-section">
           <h3>👵 Recuerdo con Nana</h3>
-          ${nanaPhoto ? `<img class="photo-preview" src="${nanaPhoto}" alt="Nana" style="margin-bottom:10px">` : ''}
+          ${nanaPhoto ? `<img class="photo-preview" src="${nanaPhoto}" alt="Nana" style="margin-bottom:10px" draggable="false" oncontextmenu="return false">` : ''}
           <div class="album-row"><span>Misiones con Nana completadas</span><b>${nanaDone.length}/${nanaMissions.length}</b></div>
           ${nanaNote ? `<p style="font-size:14px;color:var(--ink);margin-top:8px;">"${escHtml(nanaNote)}"</p>` : '<p style="font-size:13px;color:#7a99ab;">Aún no hay recuerdo escrito con Nana.</p>'}
         </div>

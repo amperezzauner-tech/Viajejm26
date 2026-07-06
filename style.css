@@ -568,6 +568,10 @@ body {
   border-radius: 12px;
   margin-bottom: 8px;
   display: block;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none; /* evita el menú "Guardar imagen" en long-press de iOS/Android */
+  pointer-events: auto;
 }
 .photo-placeholder { font-size: 14px; color: #7a99ab; margin-bottom: 8px; }
 .btn-photo {

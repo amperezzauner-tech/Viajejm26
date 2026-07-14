@@ -142,6 +142,25 @@ const DESTINATIONS = [
   }
 ];
 
+const THIRD_PLACE_FUN_FACTS = [
+  'El partido por el tercer puesto se juega dos días antes de la gran final del Mundial.',
+  'Los dos equipos que casi llegan a la final juegan aquí por la medalla de bronce: ¡el tercer lugar de todo el mundo!',
+  'En Catar 2022, Croacia venció a Marruecos 2-1 para quedarse con el bronce.',
+  'En Rusia 2018, Bélgica le ganó a Inglaterra 2-0 en este mismo partido.',
+  '¡Vas a escuchar cantos y tambores de aficiones de dos países distintos en un solo estadio!',
+];
+
+const THIRD_PLACE_CHECKLIST = [
+  { id: 'tp_bandera', icon: '🇺🇸', name: 'Ondear una bandera en las gradas' },
+  { id: 'tp_grito',   icon: '📣', name: 'Aprender un grito de gol en otro idioma' },
+  { id: 'tp_himno',   icon: '🎶', name: 'Cantar el himno de un equipo' },
+  { id: 'tp_comida',  icon: '🌭', name: 'Comer algo típico del estadio' },
+  { id: 'tp_foto',    icon: '📸', name: 'Tomarte una foto con la camiseta de tu equipo' },
+  { id: 'tp_medalla', icon: '🥉', name: 'Ver la entrega de las medallas de bronce' },
+  { id: 'tp_amigo',   icon: '🤝', name: 'Saludar a un fan de otro país' },
+  { id: 'tp_ola',     icon: '🌊', name: 'Hacer "la ola" con todo el estadio' },
+];
+
 const TOTAL_MISSION_PTS = DESTINATIONS
   .filter(d => d.missions)
   .flatMap(d => d.missions)
@@ -231,6 +250,7 @@ function defaultState() {
       lastRoundWinner: null,
     },
     familyRanking: { mama: 0, papa: 0, juanmartin: 0, peluche: 0 },
+    thirdPlace: { date: '', time: '', stadium: '', checklist: {} },
     flight: {},
     plushName: 'Peluche',
     settings: { pinHash: null },
@@ -568,8 +588,97 @@ function renderMissions(dest) {
 }
 
 /* ----- MUNDIAL — Apuesta familiar ----- */
+/* ----- Partido por el 3er y 4to puesto (vivencia en el estadio) ----- */
+
+function computeThirdPlaceCountdown(dateStr) {
+  if (!dateStr) return '📅 Ingresa la fecha del partido para ver la cuenta regresiva';
+  const target = new Date(dateStr + 'T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diffDays = Math.round((target - today) / 86400000);
+  if (diffDays > 1)  return `⏳ ¡Faltan ${diffDays} días para el partido!`;
+  if (diffDays === 1) return '🔥 ¡Mañana es el partido!';
+  if (diffDays === 0) return '🎉 ¡HOY es el partido por el tercer puesto!';
+  return '🥉 ¡Ya viviste este partido increíble!';
+}
+
+function updateThirdPlaceField(field, value) {
+  state.thirdPlace[field] = value;
+  saveState();
+  const el = document.getElementById('thirdPlaceCountdown');
+  if (el) el.textContent = computeThirdPlaceCountdown(state.thirdPlace.date);
+}
+
+function renderThirdPlaceChecklist() {
+  return THIRD_PLACE_CHECKLIST.map(item => {
+    const done = !!state.thirdPlace.checklist[item.id];
+    return `
+      <div class="mission-card ${done ? 'done' : ''}" id="tp-${item.id}">
+        <div class="mission-strip"></div>
+        <div class="mission-body">
+          <div class="mission-top">
+            <div class="mission-ico-wrap">${item.icon}</div>
+            <div class="mission-info"><div class="mission-name">${item.name}</div></div>
+            ${done ? '<div class="mission-check">✅</div>' : ''}
+          </div>
+          ${done
+            ? `<button class="mission-btn done-state" disabled>✅ ¡Lo viví!</button>`
+            : `<button class="mission-btn" onclick="toggleThirdPlaceItem('${item.id}')">🎉 ¡Lo logré!</button>`
+          }
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleThirdPlaceItem(id) {
+  if (state.thirdPlace.checklist[id]) return;
+  state.thirdPlace.checklist[id] = true;
+  saveState();
+  launchConfetti();
+  showToast('🥉 ¡Qué recuerdo tan especial!', 't-badge');
+
+  const card = document.getElementById('tp-' + id);
+  if (card) {
+    card.classList.add('done');
+    const btn = card.querySelector('.mission-btn');
+    if (btn) { btn.className = 'mission-btn done-state'; btn.disabled = true; btn.textContent = '✅ ¡Lo viví!'; }
+    const top = card.querySelector('.mission-top');
+    if (top && !top.querySelector('.mission-check')) {
+      const chk = document.createElement('div');
+      chk.className = 'mission-check'; chk.textContent = '✅';
+      top.appendChild(chk);
+    }
+  }
+}
+
 function renderFamilyBet(dest) {
   const fb = state.familyBet;
+  const tp = state.thirdPlace;
+
+  const thirdPlaceHTML = `
+    <div class="tp-hero">
+      <div class="tp-hero-badge">🥉 ¡Vamos a vivir el Mundial en persona!</div>
+      <h3 class="tp-hero-title">Partido por el Tercer y Cuarto Puesto</h3>
+      <p class="tp-hero-text">
+        Agente Juan Martín, esta es una misión muy especial: vas a estar en las gradas viendo
+        EN VIVO el partido donde dos selecciones pelean por la medalla de bronce del Mundial.
+        ¡Va a haber banderas, cantos, tambores y toda la energía de un estadio lleno!
+      </p>
+      <div class="tp-facts">
+        <div class="tp-facts-title">⭐ ¿Sabías que...?</div>
+        <ul>${THIRD_PLACE_FUN_FACTS.map(f => `<li>${escHtml(f)}</li>`).join('')}</ul>
+      </div>
+      <div class="tp-countdown" id="thirdPlaceCountdown">${computeThirdPlaceCountdown(tp.date)}</div>
+      <div class="tp-form">
+        <div><label>Fecha del partido</label><input type="date" value="${escHtml(tp.date)}" oninput="updateThirdPlaceField('date',this.value)"></div>
+        <div><label>Hora</label><input type="time" value="${escHtml(tp.time)}" oninput="updateThirdPlaceField('time',this.value)"></div>
+        <div><label>Estadio / Ciudad</label><input type="text" placeholder="Ej: Hard Rock Stadium, Miami" value="${escHtml(tp.stadium)}" oninput="updateThirdPlaceField('stadium',this.value)"></div>
+      </div>
+    </div>
+    <h3 style="color:var(--navy);margin:22px 0 12px;">🎉 Cosas para vivir en el estadio</h3>
+    <div class="missions-grid">${renderThirdPlaceChecklist()}</div>
+  `;
 
   const playersHTML = Object.keys(PLAYER_DEFAULTS).map(key => {
     const p = fb.players[key];
@@ -683,6 +792,7 @@ function renderFamilyBet(dest) {
         <div class="dest-hdr-story">${dest.story}</div>
       </div>
       <div class="form-wrap">
+        ${thirdPlaceHTML}
         ${matchHTML}
         <h3 style="color:var(--navy);margin:18px 0 12px;">👨‍👩‍👦 Apuestas de la familia</h3>
         <div class="players-grid">${playersHTML}</div>

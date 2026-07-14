@@ -1009,6 +1009,66 @@ input.file-inp { display: none; }
 }
 
 /* ══════════════════════════════════════════════════════════
+   MUNDIAL — PARTIDO POR EL 3ER Y 4TO PUESTO
+══════════════════════════════════════════════════════════ */
+.tp-hero {
+  background: linear-gradient(160deg, #FFF3E0, #FFE0B2);
+  border: 3px solid #CD7F32;
+  border-radius: 24px;
+  padding: 22px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.tp-hero-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #CD7F32, #E8A752);
+  color: #fff;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 10px;
+}
+.tp-hero-title { font-size: 22px; font-weight: 900; color: var(--navy); margin-bottom: 10px; }
+.tp-hero-text  { font-size: 15px; color: var(--ink); line-height: 1.6; margin-bottom: 16px; }
+.tp-facts {
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  text-align: left;
+  margin-bottom: 16px;
+}
+.tp-facts-title { font-weight: 800; color: #CD7F32; margin-bottom: 8px; }
+.tp-facts ul { margin: 0; padding-left: 18px; }
+.tp-facts li { font-size: 14px; color: var(--ink); line-height: 1.6; margin-bottom: 6px; }
+.tp-countdown {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--navy);
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+.tp-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  text-align: left;
+}
+.tp-form label { display: block; font-weight: 700; color: var(--navy); font-size: 13px; margin-bottom: 4px; }
+.tp-form input {
+  width: 100%;
+  border: 2px solid #CDEAF0;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+.tp-form input:focus { outline: none; border-color: #CD7F32; }
+
+/* ══════════════════════════════════════════════════════════
    MUNDIAL — APUESTA FAMILIAR
 ══════════════════════════════════════════════════════════ */
 .match-card {

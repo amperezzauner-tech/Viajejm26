@@ -19,6 +19,7 @@ const DESTINATIONS = [
     icon: '✈️',
     badge: '🛫',
     badgeName: 'Viajero del Aire',
+    dateLabel: '📅 15 de julio',
     color: '#1E90FF',
     cardBg: 'linear-gradient(135deg, #4FC3F7 0%, #1E90FF 100%)',
     story: 'Agente Juan Martín, la aventura empieza en el cielo. Antes de llegar a Florida, debes convertirte en un verdadero viajero del aire.',
@@ -38,6 +39,7 @@ const DESTINATIONS = [
     badge: '⚽',
     badgeName: 'Crack del Fútbol',
     type: 'familybet',
+    dateLabel: '📅 18 de julio en el estadio',
     color: '#1a5c3a',
     cardBg: 'linear-gradient(135deg, #1a7a3a 0%, #4CAF50 100%)',
     story: 'Antes de cada partido, todos hacen su apuesta. Juan Martín, mamá, papá y hasta el peluche pueden adivinar el marcador. ¡Que gane el mejor profeta!',
@@ -48,6 +50,7 @@ const DESTINATIONS = [
     icon: '🌴',
     badge: '🦅',
     badgeName: 'Explorador de Florida',
+    dateLabel: '📅 15–25 jul y 5–8 ago',
     color: '#063B63',
     cardBg: 'linear-gradient(135deg, #0EA5A3 0%, #0CC5C2 100%)',
     story: 'Agente Juan Martín, bienvenido a Florida — la tierra de las palmeras gigantes, los flamencos y las pizzas enormes. En Florida también está Nana, la abuela, una guía especial de esta aventura. Escúchala, abrázala y guarda un recuerdo bonito con ella.',
@@ -71,6 +74,7 @@ const DESTINATIONS = [
     icon: '🛳️',
     badge: '⚓',
     badgeName: 'Capitán del Crucero',
+    dateLabel: '📅 25 jul – 2 ago (8 días)',
     color: '#1a4a7a',
     cardBg: 'linear-gradient(135deg, #1a4a7a 0%, #0A5C9B 100%)',
     story: 'Agente Juan Martín, has subido a uno de los barcos más grandes del mundo. Tu misión: explorar cada rincón del crucero y descubrir sus secretos. ¡Zarpa, capitán!',
@@ -107,6 +111,7 @@ const DESTINATIONS = [
     icon: '🦁',
     badge: '🎢',
     badgeName: 'Domador de Fieras',
+    dateLabel: '📅 2–5 de agosto en Tampa',
     color: '#CC5B1A',
     cardBg: 'linear-gradient(135deg, #FF8C42 0%, #FF6B35 100%)',
     story: 'Agente Juan Martín, Busch Gardens es territorio salvaje. Aquí conviven animales increíbles y atracciones que ponen a prueba tu valentía. ¿Estás listo, explorador?',
@@ -126,6 +131,7 @@ const DESTINATIONS = [
     badge: '📚',
     badgeName: 'Cronista del Viaje',
     type: 'recuerdos',
+    dateLabel: '📅 Regreso a Bogotá: 8 de agosto',
     color: '#2d4a6e',
     cardBg: 'linear-gradient(135deg, #7B4FA6 0%, #B06FDC 100%)',
     story: '¡Felicidades, Agente Juan Martín! La Gran Expedición 2026 está llegando a su fin. Es hora de guardar los recuerdos más especiales para siempre.',
@@ -250,7 +256,7 @@ function defaultState() {
       lastRoundWinner: null,
     },
     familyRanking: { mama: 0, papa: 0, juanmartin: 0, peluche: 0 },
-    thirdPlace: { date: '', time: '', stadium: '', checklist: {} },
+    thirdPlace: { date: '2026-07-18', time: '', stadium: '', checklist: {} },
     flight: {},
     plushName: 'Peluche',
     settings: { pinHash: null },
@@ -437,6 +443,7 @@ function renderMap() {
           ${status === 'done' ? '<div class="dest-crown">👑</div>' : ''}
           <span class="dest-card-icon">${dest.icon}</span>
           <div class="dest-card-title">${dest.name}</div>
+          ${dest.dateLabel ? `<div class="dest-card-date">${dest.dateLabel}</div>` : ''}
         </div>
         <div class="dest-card-body">
           <div class="dest-count">${cntTxt}</div>
@@ -568,6 +575,7 @@ function renderMissions(dest) {
         <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
         <span class="dest-hdr-icon">${dest.icon}</span>
         <div class="dest-hdr-title">${dest.name}</div>
+        ${dest.dateLabel ? `<div class="dest-hdr-date">${dest.dateLabel}</div>` : ''}
         <div class="dest-hdr-story">${dest.story}</div>
         <div class="dest-hdr-prog">
           <div class="dest-hdr-bar"><div class="dest-hdr-bar-fill" id="destBarFill" style="width:${prog.pct}%"></div></div>
@@ -789,6 +797,7 @@ function renderFamilyBet(dest) {
         <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
         <span class="dest-hdr-icon">${dest.icon}</span>
         <div class="dest-hdr-title">Mundial 2026 — Apuesta Familiar</div>
+        ${dest.dateLabel ? `<div class="dest-hdr-date">${dest.dateLabel}</div>` : ''}
         <div class="dest-hdr-story">${dest.story}</div>
       </div>
       <div class="form-wrap">
@@ -849,6 +858,7 @@ function renderRecuerdos(dest) {
         <button class="dest-hdr-back" onclick="goMap()">⬅️ Volver al mapa</button>
         <span class="dest-hdr-icon">${dest.icon}</span>
         <div class="dest-hdr-title">Recuerdos Finales</div>
+        ${dest.dateLabel ? `<div class="dest-hdr-date">${dest.dateLabel}</div>` : ''}
         <div class="dest-hdr-story">${dest.story}</div>
         ${unlocked ? `<div style="background:rgba(255,255,255,.2);border-radius:12px;padding:10px;margin-top:8px;font-weight:800;">📚 ¡Insignia Cronista del Viaje desbloqueada!</div>` : ''}
       </div>
@@ -916,12 +926,11 @@ function simpleHash(str) {
   return h.toString(36);
 }
 
-/** Pide el PIN (o crea uno si no existe) y ejecuta onSuccess si se desbloquea. */
-function unlockPhotos(onSuccess) {
-  if (photosUnlocked) { onSuccess(); return; }
-
+/** Pide el PIN (o crea uno si no existe) y ejecuta onSuccess si se desbloquea.
+ * Protege tanto las fotos como el botón de reiniciar. */
+function requirePin(onSuccess) {
   if (!state.settings.pinHash) {
-    const pin1 = prompt('🔒 Crea un PIN de 4 dígitos para proteger las fotos:');
+    const pin1 = prompt('🔒 Crea un PIN de 4 dígitos para proteger las fotos y el botón de reiniciar:');
     if (pin1 === null) return;
     if (!/^\d{4}$/.test(pin1)) { showToast('⚠️ El PIN debe tener 4 números', 't-error'); return; }
     const pin2 = prompt('🔒 Confirma tu PIN:');
@@ -929,20 +938,23 @@ function unlockPhotos(onSuccess) {
     if (pin1 !== pin2) { showToast('⚠️ Los PIN no coinciden', 't-error'); return; }
     state.settings.pinHash = simpleHash(pin1);
     saveState();
-    photosUnlocked = true;
-    showToast('🔒 PIN creado. ¡Fotos protegidas!', 't-success');
+    showToast('🔒 PIN creado', 't-success');
     onSuccess();
     return;
   }
 
-  const attempt = prompt('🔒 Ingresa el PIN para ver las fotos:');
+  const attempt = prompt('🔒 Ingresa el PIN:');
   if (attempt === null) return;
   if (simpleHash(attempt) === state.settings.pinHash) {
-    photosUnlocked = true;
     onSuccess();
   } else {
     showToast('⚠️ PIN incorrecto', 't-error');
   }
+}
+
+function unlockPhotos(onSuccess) {
+  if (photosUnlocked) { onSuccess(); return; }
+  requirePin(() => { photosUnlocked = true; onSuccess(); });
 }
 
 /** Crear, cambiar o quitar el PIN de las fotos (botón en el mapa). */
@@ -1626,6 +1638,10 @@ function checkReading(id) {
 // ==================== REINICIAR ====================
 
 function resetAdventure() {
+  requirePin(() => confirmResetAdventure());
+}
+
+function confirmResetAdventure() {
   if (confirm('¿Reiniciar toda la aventura? Se perderán puntos, misiones, notas, fotos y apuestas.')) {
     localStorage.removeItem('jmAdventure2026');
     state = defaultState();
